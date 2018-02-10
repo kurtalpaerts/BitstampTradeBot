@@ -33,8 +33,8 @@ namespace BitstampTradeBot.Exchange
 
             return new List<KeyValuePair<string, string>>
             {
-                new KeyValuePair<string, string>("key", SettingsService.BitstampApiKey),
-                new KeyValuePair<string, string>("signature", GetSignature(_nonce, SettingsService.BitstampApiKey, SettingsService.BitstampApiSecret, SettingsService.BitstampCustomerId)),
+                new KeyValuePair<string, string>("key", ApiKeys.BitstampApiKey),
+                new KeyValuePair<string, string>("signature", GetSignature(_nonce, ApiKeys.BitstampApiKey, ApiKeys.BitstampApiSecret, ApiKeys.BitstampCustomerId)),
                 new KeyValuePair<string, string>("nonce", _nonce.ToString())
             };
         }
