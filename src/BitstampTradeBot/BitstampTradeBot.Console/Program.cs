@@ -1,15 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BitstampTradeBot.Trader;
 
 namespace BitstampTradeBot.Console
 {
-    class Program
+    static class Program
     {
-        static void Main(string[] args)
+        private static BitstampTrader _trader;
+
+        static void Main()
         {
+            try
+            {
+                _trader = new BitstampTrader(5000, 5000);
+                _trader.ErrorOccured += ErrorOccured;
+
+                System.Console.ReadLine();
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e);
+            }
+        }
+
+        private static void ErrorOccured(object sender, Exception e)
+        {
+            System.Console.WriteLine($"ERROR: {e.Message}");
         }
     }
 }
