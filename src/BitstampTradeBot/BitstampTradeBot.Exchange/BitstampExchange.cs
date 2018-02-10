@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -63,7 +64,7 @@ namespace BitstampTradeBot.Exchange
         }
 
         #endregion Api authentication
-        
+
         public async Task<BitstampTicker> GetTickerAsync(BitstampPairCode pairCode)
         {
             try
@@ -140,6 +141,80 @@ namespace BitstampTradeBot.Exchange
             catch (Exception e)
             {
                 throw new Exception("BitstampExchange.GetTransactions() : " + e);
+            }
+        }
+
+        public async Task<BitstampOrder> BuyLimitOrderAsync(BitstampPairCode pairCode, decimal amount, decimal price)
+        {
+            try
+            {
+                // prepare post data
+                var postData = GetAuthenticationPostData();
+                postData.Add(new KeyValuePair<string, string>("amount", amount.ToString(CultureInfo.InvariantCulture)));
+                postData.Add(new KeyValuePair<string, string>("price", price.ToString(CultureInfo.InvariantCulture)));
+
+                using (var client = new HttpClient())
+                using (var response = await client.PostAsync(SettingsService.ApiBaseUrl + "buy/" + pairCode.ToString().ToLower() + "/", new FormUrlEncodedContent(postData)))
+                using (var content = response.Content)
+                {
+                    var result = await content.ReadAsStringAsync();
+                    var executedOrder = JsonConvert.DeserializeObject<BitstampOrder>(result);
+
+                    return executedOrder;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("BitstampExchange.BuyLimitOrderAsync() : " + e);
+            }
+        }
+
+        public async Task<BitstampOrder> SellLimitOrderAsync(BitstampPairCode pairCode, decimal amount, decimal price)
+        {
+            try
+            {
+                // prepare post data
+                var postData = GetAuthenticationPostData();
+                postData.Add(new KeyValuePair<string, string>("amount", amount.ToString(CultureInfo.InvariantCulture)));
+                postData.Add(new KeyValuePair<string, string>("price", price.ToString(CultureInfo.InvariantCulture)));
+
+                using (var client = new HttpClient())
+                using (var response = await client.PostAsync(SettingsService.ApiBaseUrl + "sell/" + pairCode.ToString().ToLower() + "/", new FormUrlEncodedContent(postData)))
+                using (var content = response.Content)
+                {
+                    var result = await content.ReadAsStringAsync();
+                    var executedOrder = JsonConvert.DeserializeObject<BitstampOrder>(result);
+
+                    return executedOrder;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("BitstampExchange.SellLimitOrderAsync() : " + e);
+            }
+        }
+
+        public async Task<BitstampOrder> CancelOrderAsync(string id)
+        {
+            try
+            {
+                // prepare post data
+                var postData = GetAuthenticationPostData();
+                postData.Add(new KeyValuePair<string, string>("id", id));
+
+                using (var client = new HttpClient())
+                using (var response = await client.PostAsync(SettingsService.ApiBaseUrl + "cancel_order/", new FormUrlEncodedContent(postData)))
+                using (var content = response.Content)
+                {
+                    var result = await content.ReadAsStringAsync();
+                    var canceledOrder = JsonConvert.DeserializeObject<BitstampOrder>(result);
+
+                    return canceledOrder;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("BitstampExchange.SellLimitOrderAsync() : " + e);
             }
         }
     }
