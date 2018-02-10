@@ -24,7 +24,7 @@ namespace BitstampTradeBot.Console
 
         private static void ErrorOccured(object sender, Exception e)
         {
-            System.Console.WriteLine($"ERROR: {e.Message}");
+            System.Console.WriteLine($"ERROR: {e}");
         }
     }
 }

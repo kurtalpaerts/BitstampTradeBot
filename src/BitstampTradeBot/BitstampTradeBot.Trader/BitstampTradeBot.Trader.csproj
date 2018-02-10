@@ -44,6 +44,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TraderRules\ITraderRule.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\BitstampTradeBot.Exchange\BitstampTradeBot.Exchange.csproj">
+      <Project>{d14e91f3-65f0-47fd-a817-60816594724b}</Project>
+      <Name>BitstampTradeBot.Exchange</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

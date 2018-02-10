@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BitstampTradeBot.Exchange;
 using BitstampTradeBot.Trader.TraderRules;
 
 namespace BitstampTradeBot.Trader
@@ -14,6 +15,7 @@ namespace BitstampTradeBot.Trader
         private readonly Timer _mainTimer;
         private readonly int _dueTime;
         private readonly List<ITraderRule> _traderRules;
+        private readonly BitstampExchange _bitstampExchange = new BitstampExchange();
 
         public BitstampTrader(int startTime, int dueTime, params ITraderRule[] traderRules)
         {
