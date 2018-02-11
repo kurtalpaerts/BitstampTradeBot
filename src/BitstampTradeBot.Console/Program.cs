@@ -1,4 +1,6 @@
 ﻿using System;
+using BitstampTradeBot.Data.Models;
+using BitstampTradeBot.Data.Repositories;
 using BitstampTradeBot.Exchange;
 using BitstampTradeBot.Trader;
 using BitstampTradeBot.Trader.TraderRules;
@@ -14,7 +16,7 @@ namespace BitstampTradeBot.Console
         {
             try
             {
-                _trader = new BitstampTrader(5000, 5000,
+                _trader = new BitstampTrader(5000, 5000, 
                     new BuyPeriodicTradeRule(BitstampPairCode.BtcUsd, TimeSpan.FromSeconds(20)),
                     new BuyPeriodicTradeRule(BitstampPairCode.XrpUsd, TimeSpan.FromSeconds(20))
                  );

@@ -52,7 +52,12 @@
     <Compile Include="Services\ApiKeys.cs" />
     <Compile Include="Services\SettingsService.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\BitstampTradeBot.Data\BitstampTradeBot.Data.csproj">
+      <Project>{561f9a5a-6965-4e40-be30-71ef6ac87d72}</Project>
+      <Name>BitstampTradeBot.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

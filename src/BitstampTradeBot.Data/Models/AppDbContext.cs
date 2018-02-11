@@ -7,6 +7,7 @@ namespace BitstampTradeBot.Data.Models
     {
         public DbSet<MinMaxLog> MinMaxLogs { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<CurrencyPair> CurrencyPairs { get; set; }
 
         public AppDbContext() : base("name=DefaultConnection")
         {

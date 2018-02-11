@@ -18,13 +18,15 @@ namespace BitstampTradeBot.Trader
         private Timer _mainTimer;
         private readonly int _startTime;
         private readonly int _dueTime;
+        private readonly IRepository<MinMaxLog> _minMaxLogRepository;
+        private readonly IRepository<Order> _orderRepository;
         private readonly List<ITradeRule> _traderRules;
-        private readonly BitstampExchange _bitstampExchange = new BitstampExchange();
-        private IRepository<MinMaxLog> _minMaxLogRepository;
-        private IRepository<Order> _orderRepository;
-
+        private readonly BitstampExchange _bitstampExchange;
+        
         public BitstampTrader(int startTime, int dueTime, params ITradeRule[] tradeRules)
         {
+            _bitstampExchange = new BitstampExchange(new SqlRepository<MinMaxLog>(new AppDbContext()), new SqlRepository<Order>(new AppDbContext()), new SqlRepository<CurrencyPair>(new AppDbContext()) );
+
             _startTime = startTime;
             _dueTime = dueTime;
             _traderRules = tradeRules.ToList();

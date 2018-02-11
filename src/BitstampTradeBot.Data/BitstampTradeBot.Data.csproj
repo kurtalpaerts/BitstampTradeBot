@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\DbSetExtensions.cs" />
     <Compile Include="Migrations\201802101557099_Initial.cs" />
     <Compile Include="Migrations\201802101557099_Initial.Designer.cs">
       <DependentUpon>201802101557099_Initial.cs</DependentUpon>
@@ -54,11 +55,12 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AppDbContext.cs" />
     <Compile Include="Models\CurrencyPair.cs" />
+    <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\MinMaxLog.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\IRepository.cs" />
-    <Compile Include="Repositories\EntityFrameworkRepository.cs" />
+    <Compile Include="Repositories\SqlRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -1,28 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using BitstampTradeBot.Data.Models;
+using BitstampTradeBot.Data.Repositories;
 using BitstampTradeBot.Exchange.Models;
 using BitstampTradeBot.Exchange.Services;
 using Newtonsoft.Json;
 
 namespace BitstampTradeBot.Exchange
 {
-    public enum BitstampPairCode
-    {
-        BtcUsd, BtcEur, EurUsd, XrpUsd, XrpEur, XrpBtc, LtcUsd, LtcEur, LtcBtc, EthUsd, EthEur, EthBtc, BchUsd, BchEur, BchBtc
-    }
-
     public class BitstampExchange
     {
+        private readonly IRepository<MinMaxLog> _minMaxLogRepository;
+        private readonly IRepository<Order> _orderRepository;
+        private readonly IRepository<CurrencyPair> _currencyPair;
         public BitstampTicker Ticker;
         public BitstampAccountBalance AccountBalance;
         public List<BitstampOrder> OpenOrders;
         public List<BitstampTransaction> Transactions;
+
+
+        public BitstampExchange(IRepository<MinMaxLog> minMaxLogRepository, IRepository<Order> orderRepository, IRepository<CurrencyPair> currencyPair)
+        {
+            _minMaxLogRepository = minMaxLogRepository;
+            _orderRepository = orderRepository;
+            _currencyPair = currencyPair;
+        }
 
         #region  Api authentication
 
@@ -75,6 +84,8 @@ namespace BitstampTradeBot.Exchange
                 {
                     var result = await content.ReadAsStringAsync();
                     Ticker = JsonConvert.DeserializeObject<BitstampTicker>(result);
+
+                    UpdateMinMaxLog(pairCode, Ticker);
 
                     return Ticker;
                 }
@@ -216,6 +227,32 @@ namespace BitstampTradeBot.Exchange
             {
                 throw new Exception("BitstampExchange.SellLimitOrderAsync() : " + e);
             }
+        }
+
+        private void UpdateMinMaxLog(BitstampPairCode pairCode, BitstampTicker ticker)
+        {
+            var minMaxLogRepo = _minMaxLogRepository;
+            var tickerCodeStr = pairCode.ToString();
+
+            // get the record of the current day
+            var currentDay = DateTime.Now.Date;
+            var dateDb = minMaxLogRepo.ToList().FirstOrDefault(l => l.Day == currentDay && l.CurrencyPair.PairCode == tickerCodeStr);
+
+            // if the day record do not exist then add, otherwise update the min and max values if necessary
+            if (dateDb == null)
+            {
+                var currencyPairId = _currencyPair.ToList().First(p => p.PairCode == pairCode.ToString());
+
+                minMaxLogRepo.Add(new MinMaxLog { Day = currentDay, CurrencyPairId = currencyPairId.Id, Minimum = ticker.Last, Maximum = ticker.Last });
+            }
+            else
+            {
+                if (dateDb.Minimum > ticker.Last) dateDb.Minimum = ticker.Last;
+                if (dateDb.Maximum < ticker.Last) dateDb.Maximum = ticker.Last;
+            }
+
+            // save changes to database
+            minMaxLogRepo.Save();
         }
     }
 }

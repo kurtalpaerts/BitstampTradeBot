@@ -6,11 +6,11 @@ using System.Linq;
 
 namespace BitstampTradeBot.Data.Repositories
 {
-    public class EntityFrameworkRepository<T> : IRepository<T> where T : class
+    public class SqlRepository<T> : IRepository<T> where T : class
     {
         private readonly DbContext _ctx;
 
-        public EntityFrameworkRepository(DbContext context)
+        public SqlRepository(DbContext context)
         {
             _ctx = context;
         }

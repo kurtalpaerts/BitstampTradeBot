@@ -28,6 +28,9 @@ namespace BitstampTradeBot.Trader.TradeRules
 
             if (DateTime.Now > _lastBuyTimestamp.Add(_period))
             {
+                // get ticker
+                var ticker = await bitstampExchange.GetTickerAsync(_pairCode);
+
                 // buy
 
                 _lastBuyTimestamp = DateTime.Now;
