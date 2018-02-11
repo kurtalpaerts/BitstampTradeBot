@@ -3,7 +3,6 @@ using BitstampTradeBot.Data.Models;
 using BitstampTradeBot.Data.Repositories;
 using BitstampTradeBot.Exchange;
 using BitstampTradeBot.Trader;
-using BitstampTradeBot.Trader.TraderRules;
 using BitstampTradeBot.Trader.TradeRules;
 
 namespace BitstampTradeBot.Console

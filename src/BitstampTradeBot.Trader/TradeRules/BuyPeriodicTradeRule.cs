@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using BitstampTradeBot.Data.Models;
 using BitstampTradeBot.Data.Repositories;
 using BitstampTradeBot.Exchange;
-using BitstampTradeBot.Trader.TraderRules;
 
 namespace BitstampTradeBot.Trader.TradeRules
 {
@@ -19,7 +18,7 @@ namespace BitstampTradeBot.Trader.TradeRules
             _period = period;
         }
 
-        public async Task ExecuteAsync(BitstampExchange bitstampExchange, IRepository<MinMaxLog> minMaxLogRepository, IRepository<Order> orderRepository)
+        public async Task ExecuteAsync(BitstampExchange bitstampExchange)
         {
             if (_lastBuyTimestamp == DateTime.MinValue)
             {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using BitstampTradeBot.Data.Models;
 using BitstampTradeBot.Data.Repositories;
 using BitstampTradeBot.Exchange;
-using BitstampTradeBot.Trader.TraderRules;
+using BitstampTradeBot.Trader.TradeRules;
 
 namespace BitstampTradeBot.Trader
 {
@@ -18,14 +18,15 @@ namespace BitstampTradeBot.Trader
         private Timer _mainTimer;
         private readonly int _startTime;
         private readonly int _dueTime;
-        private readonly IRepository<MinMaxLog> _minMaxLogRepository;
-        private readonly IRepository<Order> _orderRepository;
         private readonly List<ITradeRule> _traderRules;
         private readonly BitstampExchange _bitstampExchange;
-        
+
         public BitstampTrader(int startTime, int dueTime, params ITradeRule[] tradeRules)
         {
-            _bitstampExchange = new BitstampExchange(new SqlRepository<MinMaxLog>(new AppDbContext()), new SqlRepository<Order>(new AppDbContext()), new SqlRepository<CurrencyPair>(new AppDbContext()) );
+            _bitstampExchange = new BitstampExchange(
+                new SqlRepository<MinMaxLog>(new AppDbContext()),
+                new SqlRepository<Order>(new AppDbContext()), 
+                new SqlRepository<CurrencyPair>(new AppDbContext()));
 
             _startTime = startTime;
             _dueTime = dueTime;
@@ -58,7 +59,7 @@ namespace BitstampTradeBot.Trader
 
         private async Task Trade()
         {
-            await _traderRules[_counter].ExecuteAsync(_bitstampExchange, _minMaxLogRepository, _orderRepository);
+            await _traderRules[_counter].ExecuteAsync(_bitstampExchange);
 
             _counter++;
 
