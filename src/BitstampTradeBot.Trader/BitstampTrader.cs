@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BitstampTradeBot.Data.Models;
+using BitstampTradeBot.Data.Repositories;
 using BitstampTradeBot.Exchange;
 using BitstampTradeBot.Trader.TraderRules;
 
@@ -12,16 +14,30 @@ namespace BitstampTradeBot.Trader
     {
         public event EventHandler<Exception> ErrorOccured;
 
-        private readonly Timer _mainTimer;
+        private static int _counter;
+        private Timer _mainTimer;
+        private readonly int _startTime;
         private readonly int _dueTime;
-        private readonly List<ITraderRule> _traderRules;
+        private readonly List<ITradeRule> _traderRules;
         private readonly BitstampExchange _bitstampExchange = new BitstampExchange();
+        private IRepository<MinMaxLog> _minMaxLogRepository;
+        private IRepository<Order> _orderRepository;
 
-        public BitstampTrader(int startTime, int dueTime, params ITraderRule[] traderRules)
+        public BitstampTrader(int startTime, int dueTime, params ITradeRule[] tradeRules)
         {
-            _traderRules = traderRules.ToList();
-            _mainTimer = new Timer(TimerCallback, null, startTime, Timeout.Infinite);
+            _startTime = startTime;
             _dueTime = dueTime;
+            _traderRules = tradeRules.ToList();
+        }
+
+        public void Start()
+        {
+            _mainTimer = new Timer(TimerCallback, null, _startTime, Timeout.Infinite);
+        }
+
+        public void Stop()
+        {
+            _mainTimer.Dispose();
         }
 
         private async void TimerCallback(object state)
@@ -40,9 +56,13 @@ namespace BitstampTradeBot.Trader
 
         private async Task Trade()
         {
-            foreach (var traderRule in _traderRules)
+            await _traderRules[_counter].ExecuteAsync(_bitstampExchange, _minMaxLogRepository, _orderRepository);
+
+            _counter++;
+
+            if (_counter >= _traderRules.Count)
             {
-                await traderRule.ExecuteAsync(this);
+                _counter = 0;
             }
         }
     }

@@ -12,13 +12,13 @@ using Newtonsoft.Json;
 
 namespace BitstampTradeBot.Exchange
 {
+    public enum BitstampPairCode
+    {
+        BtcUsd, BtcEur, EurUsd, XrpUsd, XrpEur, XrpBtc, LtcUsd, LtcEur, LtcBtc, EthUsd, EthEur, EthBtc, BchUsd, BchEur, BchBtc
+    }
+
     public class BitstampExchange
     {
-        public enum BitstampPairCode
-        {
-            BtcUsd, BtcEur, EurUsd, XrpUsd, XrpEur, XrpBtc, LtcUsd, LtcEur, LtcBtc, EthUsd, EthEur, EthBtc, BchUsd, BchEur, BchBtc
-        }
-
         public BitstampTicker Ticker;
         public BitstampAccountBalance AccountBalance;
         public List<BitstampOrder> OpenOrders;
