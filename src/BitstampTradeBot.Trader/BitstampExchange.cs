@@ -175,6 +175,10 @@ namespace BitstampTradeBot.Trader
                     var result = await content.ReadAsStringAsync();
                     var executedOrder = JsonConvert.DeserializeObject<BitstampOrder>(result);
 
+                    if (executedOrder.Id == 0) throw new Exception("Executed buy order id == 0!");
+
+                    executedOrder.PairCode = pairCode;
+
                     return executedOrder;
                 }
             }
@@ -198,6 +202,8 @@ namespace BitstampTradeBot.Trader
                 {
                     var result = await content.ReadAsStringAsync();
                     var executedOrder = JsonConvert.DeserializeObject<BitstampOrder>(result);
+
+                    if (executedOrder.Id == 0) throw new Exception("Executed sell order id == 0!");
 
                     return executedOrder;
                 }

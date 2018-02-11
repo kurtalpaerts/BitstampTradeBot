@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BitstampTradeBot.Models;
 using BitstampTradeBot.Trader.Helpers;
@@ -28,10 +30,14 @@ namespace BitstampTradeBot.Trader.TradeRules
             {
                 // get ticker
                 var ticker = await bitstampTrader.GetTickerAsync(_pairCode);
-                
+
                 // buy
-                var amount = CurrencyPairCalculator.AmountCredit(ticker, 10);
-                // var orderResult = await bitstampTrader.BitstampExchange.BuyLimitOrderAsync(_pairCode, amount, ticker.Last * 0.9M);
+                var tradingPairInfo = CacheHelper.GetFromCache<List<BitstampTradingPairInfo>>("TradingPairInfo").First(i => i.UrlSymbol == _pairCode.ToString().ToLower());
+
+                var price = Math.Round(ticker.Last * 0.9M, tradingPairInfo.CounterDecimals);
+                var amount = Math.Round(CurrencyPairCalculator.AmountBase(price, 10), tradingPairInfo.BaseDecimals);
+
+                var orderResult = await bitstampTrader.BuyLimitOrderAsync(_pairCode, amount, price);
 
                 _lastBuyTimestamp = DateTime.Now;
             }

@@ -7,6 +7,9 @@ namespace BitstampTradeBot.Models
 
     public class BitstampOrder
     {
+        [JsonIgnore]
+        public BitstampPairCode PairCode { get; set; }
+
         // transaction ID
         [JsonProperty(PropertyName = "id")]
         public long Id { get; set; }
@@ -26,9 +29,5 @@ namespace BitstampTradeBot.Models
         // amount
         [JsonProperty(PropertyName = "amount")]
         public decimal Amount { get; set; }
-
-        // currency_pair (if all currency pairs)
-        [JsonProperty(PropertyName = "currency_pair")]
-        public string CurrencyPair { get; set; }
     }
 }

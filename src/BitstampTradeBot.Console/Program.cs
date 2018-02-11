@@ -20,6 +20,7 @@ namespace BitstampTradeBot.Console
                  );
                 _trader.ErrorOccured += ErrorOccured;
                 _trader.TickerRetrieved += TickerRetrieved;
+                _trader.BuyLimitOrderPlaced += BuyLimitOrderPlaced;
 
                 // start trader
                 _trader.Start();
@@ -30,6 +31,11 @@ namespace BitstampTradeBot.Console
             {
                 System.Console.WriteLine(e);
             }
+        }
+
+        private static void BuyLimitOrderPlaced(object sender, BitstampOrder order)
+        {
+            System.Console.WriteLine($"Buy order placed for {order.Amount} {order.PairCode.ToString().Substring(0,3).ToUpper()} @{order.Price} {order.PairCode.ToString().Substring(3,3).ToUpper()} ({order.Amount * order.Price} {order.PairCode.ToString().Substring(3,3).ToUpper()})");
         }
 
         private static void TickerRetrieved(object sender, BitstampTicker ticker)

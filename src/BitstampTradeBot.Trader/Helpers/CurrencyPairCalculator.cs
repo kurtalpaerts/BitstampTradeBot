@@ -4,14 +4,14 @@ namespace BitstampTradeBot.Trader.Helpers
 {
     class CurrencyPairCalculator
     {
-        public static decimal AmountCredit(BitstampTicker ticker, decimal amountDebet)
+        public static decimal AmountBase(decimal price, decimal amountCounter)
         {
-            return amountDebet / ticker.Last;
+            return amountCounter / price;
         }
 
-        public static decimal AmountDebet(BitstampTicker ticker, decimal amountCredit)
+        public static decimal AmountCounter(decimal price, decimal amountBase)
         {
-            return amountCredit * ticker.Last;
+            return amountBase * price;
         }
     }
 }

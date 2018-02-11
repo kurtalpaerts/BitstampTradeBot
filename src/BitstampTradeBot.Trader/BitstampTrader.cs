@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +11,7 @@ using BitstampTradeBot.Data.Repositories;
 using BitstampTradeBot.Models;
 using BitstampTradeBot.Trader.Helpers;
 using BitstampTradeBot.Trader.TradeRules;
+using Newtonsoft.Json;
 
 namespace BitstampTradeBot.Trader
 {
@@ -16,6 +19,7 @@ namespace BitstampTradeBot.Trader
     {
         public event EventHandler<Exception> ErrorOccured;
         public event EventHandler<BitstampTicker> TickerRetrieved;
+        public event EventHandler<BitstampOrder> BuyLimitOrderPlaced;
 
         private static int _counter;
         private Timer _mainTimer;
@@ -86,6 +90,14 @@ namespace BitstampTradeBot.Trader
             UpdateMinMaxLog(pairCode, ticker);
 
             return ticker;
+        }
+
+        internal async Task<BitstampOrder> BuyLimitOrderAsync(BitstampPairCode pairCode, decimal amount, decimal price)
+        {
+            var executedOrder =  await BitstampExchange.BuyLimitOrderAsync(pairCode, amount, price);
+            BuyLimitOrderPlaced?.Invoke(this, executedOrder);
+
+            return executedOrder;
         }
 
         #endregion
