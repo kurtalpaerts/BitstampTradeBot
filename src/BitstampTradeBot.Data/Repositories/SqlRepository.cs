@@ -45,6 +45,11 @@ namespace BitstampTradeBot.Data.Repositories
             return _ctx.Set<T>().Where(predicate);
         }
 
+        public T First(Func<T, bool> predicate)
+        {
+            return _ctx.Set<T>().First(predicate);
+        }
+
         public List<T> ToList()
         {
             return _ctx.Set<T>().ToList();

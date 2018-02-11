@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace BitstampTradeBot.Exchange.Models
+namespace BitstampTradeBot.Models
 {
     public class BitstampAccountBalance
     {

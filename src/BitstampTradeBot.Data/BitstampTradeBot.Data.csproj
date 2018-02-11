@@ -55,7 +55,6 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AppDbContext.cs" />
     <Compile Include="Models\CurrencyPair.cs" />
-    <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\MinMaxLog.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -70,6 +69,12 @@
     <EmbeddedResource Include="Migrations\201802101557099_Initial.resx">
       <DependentUpon>201802101557099_Initial.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BitstampTradeBot.Models\BitstampTradeBot.Models.csproj">
+      <Project>{a0eff6d3-3ccd-4577-8660-9a018701a6a1}</Project>
+      <Name>BitstampTradeBot.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

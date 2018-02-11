@@ -1,7 +1,6 @@
 ﻿using System;
-using BitstampTradeBot.Data.Models;
-using BitstampTradeBot.Data.Repositories;
-using BitstampTradeBot.Exchange;
+using System.Globalization;
+using BitstampTradeBot.Models;
 using BitstampTradeBot.Trader;
 using BitstampTradeBot.Trader.TradeRules;
 
@@ -15,13 +14,15 @@ namespace BitstampTradeBot.Console
         {
             try
             {
-                _trader = new BitstampTrader(5000, 5000, 
+                // initialize trader
+                _trader = new BitstampTrader(5000, 5000,
                     new BuyPeriodicTradeRule(BitstampPairCode.BtcUsd, TimeSpan.FromSeconds(20)),
                     new BuyPeriodicTradeRule(BitstampPairCode.XrpUsd, TimeSpan.FromSeconds(20))
                  );
-
-
                 _trader.ErrorOccured += ErrorOccured;
+                _trader.TickerRetrieved += TickerRetrieved;
+
+                // start trader
                 _trader.Start();
 
                 System.Console.ReadLine();
@@ -30,6 +31,11 @@ namespace BitstampTradeBot.Console
             {
                 System.Console.WriteLine(e);
             }
+        }
+
+        private static void TickerRetrieved(object sender, BitstampTicker ticker)
+        {
+            System.Console.WriteLine($"{ticker.PairCode} : {ticker.Last.ToString("N8", new NumberFormatInfo { CurrencyDecimalDigits = 8 }) }  ");
         }
 
         private static void ErrorOccured(object sender, Exception e)

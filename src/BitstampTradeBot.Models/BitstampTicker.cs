@@ -1,10 +1,13 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace BitstampTradeBot.Exchange.Models
+namespace BitstampTradeBot.Models
 {
     public class BitstampTicker
     {
+        [JsonIgnore]
+        public BitstampPairCode PairCode { get; set; }
+
         // Last BTC price
         [JsonProperty(PropertyName = "last")]
         public decimal Last { get; set; }

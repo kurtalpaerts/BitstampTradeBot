@@ -1,6 +1,6 @@
-﻿namespace BitstampTradeBot.Exchange.Services
+﻿namespace BitstampTradeBot.Models
 {
-    public static class SettingsService
+    public class Settings
     {
         public const string ApiBaseUrl = "https://www.bitstamp.net/api/v2/";
     }

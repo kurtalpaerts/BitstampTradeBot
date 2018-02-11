@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using BitstampTradeBot.Data.Models;
-using BitstampTradeBot.Data.Repositories;
-using BitstampTradeBot.Exchange;
+using BitstampTradeBot.Models;
 
 namespace BitstampTradeBot.Trader.TradeRules
 {
@@ -18,7 +16,7 @@ namespace BitstampTradeBot.Trader.TradeRules
             _period = period;
         }
 
-        public async Task ExecuteAsync(BitstampExchange bitstampExchange)
+        public async Task ExecuteAsync(BitstampTrader bitstampTrader)
         {
             if (_lastBuyTimestamp == DateTime.MinValue)
             {
@@ -28,9 +26,10 @@ namespace BitstampTradeBot.Trader.TradeRules
             if (DateTime.Now > _lastBuyTimestamp.Add(_period))
             {
                 // get ticker
-                var ticker = await bitstampExchange.GetTickerAsync(_pairCode);
+                var ticker = await bitstampTrader.GetTickerAsync(_pairCode);
 
                 // buy
+                //var orderResult = await bitstampExchange.BuyLimitOrderAsync(_pairCode, 0, ticker.Last * 0.9M);
 
                 _lastBuyTimestamp = DateTime.Now;
             }

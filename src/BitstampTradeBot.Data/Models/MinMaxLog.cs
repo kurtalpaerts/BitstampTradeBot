@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BitstampTradeBot.Data.Models
 {
-    public class MinMaxLog
+    public sealed class MinMaxLog
     {
         [Key]
         [Column(Order = 0)]
@@ -20,6 +19,6 @@ namespace BitstampTradeBot.Data.Models
 
         public decimal Maximum { get; set; }
 
-        public virtual CurrencyPair CurrencyPair { get; set; }
+        public CurrencyPair CurrencyPair { get; set; }
     }
 }

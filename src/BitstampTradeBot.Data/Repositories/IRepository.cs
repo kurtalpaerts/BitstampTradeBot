@@ -10,6 +10,7 @@ namespace BitstampTradeBot.Data.Repositories
         void Save();
         void Update(T entity);
         IEnumerable<T> Where(Func<T, bool> predicate);
+        T First(Func<T, bool> predicate);
         List<T> ToList();
     }
 }

@@ -1,7 +1,8 @@
 using System;
 using BitstampTradeBot.Data.Helpers;
-using BitstampTradeBot.Data.Models;
+using BitstampTradeBot.Models;
 using System.Data.Entity.Migrations;
+using BitstampTradeBot.Data.Models;
 
 namespace BitstampTradeBot.Data.Migrations
 {
@@ -14,6 +15,7 @@ namespace BitstampTradeBot.Data.Migrations
 
         protected override void Seed(BitstampTradeBot.Data.Models.AppDbContext context)
         {
+            // loop through all currency pair codes and add to database
             var pairCodeEnums = Enum.GetValues(typeof(BitstampPairCode));
             foreach (var value in pairCodeEnums)
             {

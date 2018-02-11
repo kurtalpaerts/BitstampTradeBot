@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace BitstampTradeBot.Exchange.Models
+namespace BitstampTradeBot.Models
 {
     public enum BitstampOrderType { Buy = 0, Sell = 1 }
 

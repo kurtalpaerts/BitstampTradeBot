@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("BitstampTradeBot.Exchange")]
+[assembly: AssemblyTitle("BitstampTradeBot.Models")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("BitstampTradeBot.Exchange")]
+[assembly: AssemblyProduct("BitstampTradeBot.Models")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d14e91f3-65f0-47fd-a817-60816594724b")]
+[assembly: Guid("a0eff6d3-3ccd-4577-8660-9a018701a6a1")]
 
 // Version information for an assembly consists of the following four values:
 //
