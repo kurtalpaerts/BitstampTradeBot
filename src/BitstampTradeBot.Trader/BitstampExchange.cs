@@ -81,6 +81,26 @@ namespace BitstampTradeBot.Trader
             }
         }
 
+        public async Task<List<BitstampTradingPairInfo>> GetPairsInfoAsync()
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                using (var response = await client.GetAsync(Settings.ApiBaseUrl + "trading-pairs-info/"))
+                using (var content = response.Content)
+                {
+                    var result = await content.ReadAsStringAsync();
+                    var pairsInfo = JsonConvert.DeserializeObject<List<BitstampTradingPairInfo>>(result);
+
+                    return pairsInfo;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("BitstampExchange.GetPairsInfoAsync() : " + e);
+            }
+        }
+
         public async Task<BitstampAccountBalance> GetAccountBalanceAsync()
         {
             try
@@ -144,7 +164,6 @@ namespace BitstampTradeBot.Trader
         {
             try
             {
-                // prepare post data
                 var postData = GetAuthenticationPostData();
                 postData.Add(new KeyValuePair<string, string>("amount", amount.ToString(CultureInfo.InvariantCulture)));
                 postData.Add(new KeyValuePair<string, string>("price", price.ToString(CultureInfo.InvariantCulture)));
@@ -169,7 +188,6 @@ namespace BitstampTradeBot.Trader
         {
             try
             {
-                // prepare post data
                 var postData = GetAuthenticationPostData();
                 postData.Add(new KeyValuePair<string, string>("amount", amount.ToString(CultureInfo.InvariantCulture)));
                 postData.Add(new KeyValuePair<string, string>("price", price.ToString(CultureInfo.InvariantCulture)));
@@ -194,7 +212,6 @@ namespace BitstampTradeBot.Trader
         {
             try
             {
-                // prepare post data
                 var postData = GetAuthenticationPostData();
                 postData.Add(new KeyValuePair<string, string>("id", id));
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using BitstampTradeBot.Models;
+using BitstampTradeBot.Trader.Helpers;
 
 namespace BitstampTradeBot.Trader.TradeRules
 {
@@ -27,9 +28,10 @@ namespace BitstampTradeBot.Trader.TradeRules
             {
                 // get ticker
                 var ticker = await bitstampTrader.GetTickerAsync(_pairCode);
-
+                
                 // buy
-                //var orderResult = await bitstampExchange.BuyLimitOrderAsync(_pairCode, 0, ticker.Last * 0.9M);
+                var amount = CurrencyPairCalculator.AmountCredit(ticker, 10);
+                // var orderResult = await bitstampTrader.BitstampExchange.BuyLimitOrderAsync(_pairCode, amount, ticker.Last * 0.9M);
 
                 _lastBuyTimestamp = DateTime.Now;
             }

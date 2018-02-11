@@ -16,8 +16,7 @@ namespace BitstampTradeBot.Console
             {
                 // initialize trader
                 _trader = new BitstampTrader(5000, 5000,
-                    new BuyPeriodicTradeRule(BitstampPairCode.BtcUsd, TimeSpan.FromSeconds(20)),
-                    new BuyPeriodicTradeRule(BitstampPairCode.XrpUsd, TimeSpan.FromSeconds(20))
+                    new BuyPeriodicTradeRule(BitstampPairCode.BtcUsd, TimeSpan.FromSeconds(5))
                  );
                 _trader.ErrorOccured += ErrorOccured;
                 _trader.TickerRetrieved += TickerRetrieved;

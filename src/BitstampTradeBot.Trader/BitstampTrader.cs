@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
 using BitstampTradeBot.Data.Models;
 using BitstampTradeBot.Data.Repositories;
 using BitstampTradeBot.Models;
+using BitstampTradeBot.Trader.Helpers;
 using BitstampTradeBot.Trader.TradeRules;
 
 namespace BitstampTradeBot.Trader
@@ -20,14 +22,14 @@ namespace BitstampTradeBot.Trader
         private readonly int _startTime;
         private readonly int _dueTime;
         private readonly List<ITradeRule> _traderRules;
-        private readonly BitstampExchange _bitstampExchange;
+        private readonly BitstampExchange BitstampExchange;
         private readonly SqlRepository<MinMaxLog> _minMaxLogRepository;
         private readonly SqlRepository<Order> _orderRepository;
         private readonly SqlRepository<CurrencyPair> _currencyPairRepository;
-        
+
         public BitstampTrader(int startTime, int dueTime, params ITradeRule[] tradeRules)
         {
-            _bitstampExchange = new BitstampExchange();
+            BitstampExchange = new BitstampExchange();
             _minMaxLogRepository = new SqlRepository<MinMaxLog>(new AppDbContext());
             _orderRepository = new SqlRepository<Order>(new AppDbContext());
             _currencyPairRepository = new SqlRepository<CurrencyPair>(new AppDbContext());
@@ -51,6 +53,7 @@ namespace BitstampTradeBot.Trader
         {
             try
             {
+                await UpdateTradingPairsInfo();
                 await Trade();
             }
             catch (Exception e)
@@ -77,7 +80,7 @@ namespace BitstampTradeBot.Trader
 
         internal async Task<BitstampTicker> GetTickerAsync(BitstampPairCode pairCode)
         {
-            var ticker = await _bitstampExchange.GetTickerAsync(pairCode);
+            var ticker = await BitstampExchange.GetTickerAsync(pairCode);
             TickerRetrieved?.Invoke(this, ticker);
 
             UpdateMinMaxLog(pairCode, ticker);
@@ -113,6 +116,17 @@ namespace BitstampTradeBot.Trader
 
             // save changes to database
             _minMaxLogRepository.Save();
+        }
+
+        private async Task UpdateTradingPairsInfo()
+        {
+            if (!CacheHelper.IsIncache("TradingPairInfo"))
+            {
+                var pairsInfo = await BitstampExchange.GetPairsInfoAsync();
+
+                // cache the pairsinfo for 4 hours to reduce the number of api calls, Bitstamp allows only 600 calls per 10 minutes
+                CacheHelper.SaveTocache("TradingPairInfo", pairsInfo, DateTime.Now.AddHours(4));
+            }
         }
 
         #endregion helpers

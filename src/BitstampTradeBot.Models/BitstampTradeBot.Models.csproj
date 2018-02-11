@@ -47,6 +47,7 @@
     <Compile Include="BitstampAccountBalance.cs" />
     <Compile Include="BitstampOrder.cs" />
     <Compile Include="BitstampTicker.cs" />
+    <Compile Include="BitstampTradingPairInfo.cs" />
     <Compile Include="BitstampTransaction.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Enums.cs" />
