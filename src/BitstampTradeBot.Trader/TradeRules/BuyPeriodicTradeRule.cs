@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BitstampTradeBot.Models;
+using BitstampTradeBot.Models.Helpers;
 using BitstampTradeBot.Trader.Helpers;
 
 namespace BitstampTradeBot.Trader.TradeRules
@@ -32,7 +33,7 @@ namespace BitstampTradeBot.Trader.TradeRules
                 var ticker = await bitstampTrader.GetTickerAsync(_pairCode);
 
                 // buy
-                var tradingPairInfo = CacheHelper.GetFromCache<List<BitstampTradingPairInfo>>("TradingPairInfo").First(i => i.UrlSymbol == _pairCode.ToString().ToLower());
+                var tradingPairInfo = CacheHelper.GetFromCache<List<BitstampTradingPairInfo>>("TradingPairInfo").First(i => i.UrlSymbol == _pairCode.ToLower());
 
                 var price = Math.Round(ticker.Last * 0.9M, tradingPairInfo.CounterDecimals);
                 var amount = Math.Round(CurrencyPairCalculator.AmountBase(price, 10), tradingPairInfo.BaseDecimals);

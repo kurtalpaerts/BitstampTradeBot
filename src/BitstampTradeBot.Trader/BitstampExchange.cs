@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BitstampTradeBot.Models;
+using BitstampTradeBot.Models.Helpers;
 using Newtonsoft.Json;
 
 namespace BitstampTradeBot.Trader
@@ -65,7 +66,7 @@ namespace BitstampTradeBot.Trader
             try
             {
                 using (var client = new HttpClient())
-                using (var response = await client.GetAsync(Settings.ApiBaseUrl + "ticker/" + pairCode.ToString().ToLower()))
+                using (var response = await client.GetAsync(Settings.ApiBaseUrl + "ticker/" + pairCode.ToLower()))
                 using (var content = response.Content)
                 {
                     var result = await content.ReadAsStringAsync();
@@ -169,7 +170,7 @@ namespace BitstampTradeBot.Trader
                 postData.Add(new KeyValuePair<string, string>("price", price.ToString(CultureInfo.InvariantCulture)));
 
                 using (var client = new HttpClient())
-                using (var response = await client.PostAsync(Settings.ApiBaseUrl + "buy/" + pairCode.ToString().ToLower() + "/", new FormUrlEncodedContent(postData)))
+                using (var response = await client.PostAsync(Settings.ApiBaseUrl + "buy/" + pairCode.ToLower() + "/", new FormUrlEncodedContent(postData)))
                 using (var content = response.Content)
                 {
                     var result = await content.ReadAsStringAsync();
@@ -197,7 +198,7 @@ namespace BitstampTradeBot.Trader
                 postData.Add(new KeyValuePair<string, string>("price", price.ToString(CultureInfo.InvariantCulture)));
 
                 using (var client = new HttpClient())
-                using (var response = await client.PostAsync(Settings.ApiBaseUrl + "sell/" + pairCode.ToString().ToLower() + "/", new FormUrlEncodedContent(postData)))
+                using (var response = await client.PostAsync(Settings.ApiBaseUrl + "sell/" + pairCode.ToLower() + "/", new FormUrlEncodedContent(postData)))
                 using (var content = response.Content)
                 {
                     var result = await content.ReadAsStringAsync();

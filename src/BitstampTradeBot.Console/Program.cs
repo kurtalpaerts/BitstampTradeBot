@@ -3,6 +3,7 @@ using System.Globalization;
 using BitstampTradeBot.Models;
 using BitstampTradeBot.Trader;
 using BitstampTradeBot.Trader.TradeRules;
+using BitstampTradeBot.Models.Helpers;
 
 namespace BitstampTradeBot.Console
 {
@@ -35,7 +36,7 @@ namespace BitstampTradeBot.Console
 
         private static void BuyLimitOrderPlaced(object sender, BitstampOrder order)
         {
-            System.Console.WriteLine($"Buy order placed for {order.Amount} {order.PairCode.ToString().Substring(0,3).ToUpper()} @{order.Price} {order.PairCode.ToString().Substring(3,3).ToUpper()} ({order.Amount * order.Price} {order.PairCode.ToString().Substring(3,3).ToUpper()})");
+            System.Console.WriteLine($"Buy order placed for {order.Amount} {order.PairCode.BaseCodeUpper()} @{order.Price} {order.PairCode.CounterCodeUpper()} ({order.Amount * order.Price} {order.PairCode.CounterCodeUpper()})");
         }
 
         private static void TickerRetrieved(object sender, BitstampTicker ticker)
