@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using BitstampTradeBot.Data.Models;
@@ -8,6 +9,7 @@ using BitstampTradeBot.Data.Repositories;
 using BitstampTradeBot.Models;
 using BitstampTradeBot.Trader.Helpers;
 using BitstampTradeBot.Trader.TradeRules;
+using Ninject;
 
 namespace BitstampTradeBot.Trader
 {
@@ -23,16 +25,20 @@ namespace BitstampTradeBot.Trader
         private readonly int _dueTime;
         private readonly List<ITradeRule> _traderRules;
         private readonly BitstampExchange BitstampExchange;
-        private readonly SqlRepository<MinMaxLog> _minMaxLogRepository;
-        private readonly SqlRepository<Order> _orderRepository;
-        private readonly SqlRepository<CurrencyPair> _currencyPairRepository;
+        private readonly IRepository<MinMaxLog> _minMaxLogRepository;
+        private readonly IRepository<Order> _orderRepository;
+        private readonly IRepository<CurrencyPair> _currencyPairRepository;
 
         public BitstampTrader(int startTime, int dueTime, params ITradeRule[] tradeRules)
         {
+            // Ninject
+            var kernel = new StandardKernel();
+            kernel.Load(Assembly.GetExecutingAssembly());
+            _minMaxLogRepository = kernel.Get<IRepository<MinMaxLog>>();
+            _orderRepository = kernel.Get<IRepository<Order>>();
+            _currencyPairRepository = kernel.Get<IRepository<CurrencyPair>>();
+
             BitstampExchange = new BitstampExchange();
-            _minMaxLogRepository = new SqlRepository<MinMaxLog>(new AppDbContext());
-            _orderRepository = new SqlRepository<Order>(new AppDbContext());
-            _currencyPairRepository = new SqlRepository<CurrencyPair>(new AppDbContext());
 
             _startTime = startTime;
             _dueTime = dueTime;
