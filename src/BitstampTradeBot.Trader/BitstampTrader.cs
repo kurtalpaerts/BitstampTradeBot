@@ -21,7 +21,6 @@ namespace BitstampTradeBot.Trader
 
         private static int _counter;
         private Timer _mainTimer;
-        private readonly int _startTime;
         private readonly int _dueTime;
         private readonly List<TradeRuleBase> _traderRules;
         private readonly BitstampExchange BitstampExchange;
@@ -29,7 +28,7 @@ namespace BitstampTradeBot.Trader
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<CurrencyPair> _currencyPairRepository;
 
-        public BitstampTrader(int startTime, int dueTime, params TradeRuleBase[] tradeRules)
+        public BitstampTrader(int dueTime, params TradeRuleBase[] tradeRules)
         {
             // Ninject
             var kernel = new StandardKernel();
@@ -38,7 +37,6 @@ namespace BitstampTradeBot.Trader
             _orderRepository = kernel.Get<IRepository<Order>>();
             _currencyPairRepository = kernel.Get<IRepository<CurrencyPair>>();
 
-            _startTime = startTime;
             _dueTime = dueTime;
             _traderRules = tradeRules.ToList();
 
@@ -48,7 +46,7 @@ namespace BitstampTradeBot.Trader
 
         public void Start()
         {
-            _mainTimer = new Timer(TimerCallback, null, _startTime, Timeout.Infinite);
+            _mainTimer = new Timer(TimerCallback, null, _dueTime, Timeout.Infinite);
         }
 
         public void Stop()

@@ -61,6 +61,7 @@
     <Compile Include="Helpers\NinjectBindings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TradeHolders\ITradeHolder.cs" />
+    <Compile Include="TradeHolders\WaitPeriodAfterBuyOrderHolder.cs" />
     <Compile Include="TradeHolders\WaitPeriodAfterStartHolder.cs" />
     <Compile Include="TradeRules\BuyPeriodicTradeRule.cs" />
     <Compile Include="TradeRules\TradeRuleBase.cs" />
