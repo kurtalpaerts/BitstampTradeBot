@@ -7,26 +7,31 @@ using BitstampTradeBot.Data.Repositories;
 using BitstampTradeBot.Models;
 using BitstampTradeBot.Models.Helpers;
 using BitstampTradeBot.Trader.Helpers;
+using BitstampTradeBot.Trader.TradeHolders;
 
 namespace BitstampTradeBot.Trader.TradeRules
 {
-    public class BuyPeriodicTradeRule : ITradeRule
+    public class BuyPeriodicTradeRule : TradeRuleBase, ITradeRule
     {
         private readonly BitstampPairCode _pairCode;
         private readonly TimeSpan _period;
         private DateTime _lastBuyTimestamp;
 
-        public BuyPeriodicTradeRule(BitstampPairCode pairCode, TimeSpan period)
+        public BuyPeriodicTradeRule(BitstampPairCode pairCode, TimeSpan period, params ITradeHolder[] tradeHolders) : base (tradeHolders)
         {
             _pairCode = pairCode;
             _period = period;
+            _lastBuyTimestamp = DateTime.Now.Add(period);
         }
 
         public async Task ExecuteAsync(BitstampTrader bitstampTrader)
         {
-            if (_lastBuyTimestamp == DateTime.MinValue)
+            if (TradeHolders != null)
             {
-                _lastBuyTimestamp = DateTime.Now;
+                foreach (var tradeHolder in TradeHolders)
+                {
+                    if (tradeHolder.Execute(bitstampTrader)) return;
+                }
             }
 
             if (DateTime.Now > _lastBuyTimestamp.Add(_period))
