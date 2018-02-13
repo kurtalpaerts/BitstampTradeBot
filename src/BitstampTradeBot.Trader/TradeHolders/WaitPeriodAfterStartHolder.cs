@@ -1,4 +1,5 @@
 ﻿using System;
+using BitstampTradeBot.Trader.TradeRules;
 
 namespace BitstampTradeBot.Trader.TradeHolders
 {
@@ -13,7 +14,7 @@ namespace BitstampTradeBot.Trader.TradeHolders
             _startTime = DateTime.Now;
         }
 
-        public bool Execute(BitstampTrader bitstampTrader)
+        public bool Execute(TradeRuleBase tradeRule)
         {
             return DateTime.Now <= _startTime.Add(_period);
         }

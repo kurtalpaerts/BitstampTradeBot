@@ -15,13 +15,12 @@ namespace BitstampTradeBot.Trader.TradeRules
     {
         private readonly BitstampPairCode _pairCode;
         private readonly TimeSpan _period;
-        private DateTime _lastBuyTimestamp;
 
         public BuyPeriodicTradeRule(BitstampPairCode pairCode, TimeSpan period, params ITradeHolder[] tradeHolders) : base (tradeHolders)
         {
             _pairCode = pairCode;
             _period = period;
-            _lastBuyTimestamp = DateTime.Now.Add(period);
+            LastBuyTimestamp = DateTime.Now.Add(period);
         }
 
         internal override async Task ExecuteAsync(BitstampTrader bitstampTrader)
@@ -30,11 +29,11 @@ namespace BitstampTradeBot.Trader.TradeRules
             {
                 foreach (var tradeHolder in TradeHolders)
                 {
-                    if (tradeHolder.Execute(bitstampTrader)) return;
+                    if (tradeHolder.Execute(this)) return;
                 }
             }
 
-            if (DateTime.Now > _lastBuyTimestamp.Add(_period))
+            if (DateTime.Now > LastBuyTimestamp.Add(_period))
             {
                 // get ticker
                 var ticker = await bitstampTrader.GetTickerAsync(_pairCode);
@@ -61,7 +60,7 @@ namespace BitstampTradeBot.Trader.TradeRules
                 });
                 ordersRepo.Save();
 
-                _lastBuyTimestamp = DateTime.Now;
+                LastBuyTimestamp = DateTime.Now;
             }
         }
     }

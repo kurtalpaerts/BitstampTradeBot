@@ -1,7 +1,9 @@
-﻿namespace BitstampTradeBot.Trader.TradeHolders
+﻿using BitstampTradeBot.Trader.TradeRules;
+
+namespace BitstampTradeBot.Trader.TradeHolders
 {
     public interface ITradeHolder
     {
-        bool Execute(BitstampTrader bitstampTrader);
+        bool Execute(TradeRuleBase tradeRule);
     }
 }
