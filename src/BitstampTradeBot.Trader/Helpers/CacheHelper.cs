@@ -3,7 +3,7 @@ using System.Runtime.Caching;
 
 namespace BitstampTradeBot.Trader.Helpers
 {
-    class CacheHelper
+    static class CacheHelper
     {
         public static void SaveTocache(string cacheKey, object savedItem, DateTime absoluteExpiration)
         {

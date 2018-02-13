@@ -38,11 +38,12 @@ namespace BitstampTradeBot.Trader
             _orderRepository = kernel.Get<IRepository<Order>>();
             _currencyPairRepository = kernel.Get<IRepository<CurrencyPair>>();
 
-            BitstampExchange = new BitstampExchange();
-
             _startTime = startTime;
             _dueTime = dueTime;
             _traderRules = tradeRules.ToList();
+
+            BitstampExchange = new BitstampExchange();
+            CacheHelper.SaveTocache("TradingPairsDb", _currencyPairRepository.ToList(), DateTime.MaxValue);
         }
 
         public void Start()
@@ -111,8 +112,8 @@ namespace BitstampTradeBot.Trader
             // get the record of the current day
             var currentDay = DateTime.Now.Date;
 
-            // get the pair code id
-            var pairCodeId = _currencyPairRepository.First(c => c.PairCode == pairCode.ToString()).Id;
+            // get the pair code id from cache
+            var pairCodeId = CacheHelper.GetFromCache<List<CurrencyPair>>("TradingPairsDb").First(c => c.PairCode == pairCode.ToString()).Id;
 
             // get minMaxLog from database
             var minMaxLog = _minMaxLogRepository.ToList().FirstOrDefault(l => l.Day == currentDay && l.CurrencyPairId == pairCodeId);

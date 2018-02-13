@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BitstampTradeBot.Data.Models
 {
-    public sealed class MinMaxLog
+    public class MinMaxLog
     {
         [Key]
         [Column(Order = 0)]
@@ -19,6 +19,6 @@ namespace BitstampTradeBot.Data.Models
 
         public decimal Maximum { get; set; }
 
-        public CurrencyPair CurrencyPair { get; set; }
+        public virtual CurrencyPair CurrencyPair { get; set; }
     }
 }

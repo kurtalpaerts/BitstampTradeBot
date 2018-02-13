@@ -52,6 +52,14 @@
     <Compile Include="Migrations\201802101557099_Initial.Designer.cs">
       <DependentUpon>201802101557099_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802131753597_CurrencyPair_FK_In_Order_Model.cs" />
+    <Compile Include="Migrations\201802131753597_CurrencyPair_FK_In_Order_Model.Designer.cs">
+      <DependentUpon>201802131753597_CurrencyPair_FK_In_Order_Model.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802131832254_Nullable_Columns_In_Order_Model.cs" />
+    <Compile Include="Migrations\201802131832254_Nullable_Columns_In_Order_Model.Designer.cs">
+      <DependentUpon>201802131832254_Nullable_Columns_In_Order_Model.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AppDbContext.cs" />
     <Compile Include="Models\CurrencyPair.cs" />
@@ -68,6 +76,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201802101557099_Initial.resx">
       <DependentUpon>201802101557099_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802131753597_CurrencyPair_FK_In_Order_Model.resx">
+      <DependentUpon>201802131753597_CurrencyPair_FK_In_Order_Model.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802131832254_Nullable_Columns_In_Order_Model.resx">
+      <DependentUpon>201802131832254_Nullable_Columns_In_Order_Model.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
