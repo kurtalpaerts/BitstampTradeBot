@@ -23,13 +23,13 @@ namespace BitstampTradeBot.Trader
         private Timer _mainTimer;
         private readonly int _startTime;
         private readonly int _dueTime;
-        private readonly List<ITradeRule> _traderRules;
+        private readonly List<TradeRuleBase> _traderRules;
         private readonly BitstampExchange BitstampExchange;
         private readonly IRepository<MinMaxLog> _minMaxLogRepository;
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<CurrencyPair> _currencyPairRepository;
 
-        public BitstampTrader(int startTime, int dueTime, params ITradeRule[] tradeRules)
+        public BitstampTrader(int startTime, int dueTime, params TradeRuleBase[] tradeRules)
         {
             // Ninject
             var kernel = new StandardKernel();

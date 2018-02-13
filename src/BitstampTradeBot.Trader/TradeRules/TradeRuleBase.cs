@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using BitstampTradeBot.Trader.TradeHolders;
 
 namespace BitstampTradeBot.Trader.TradeRules
@@ -11,5 +12,7 @@ namespace BitstampTradeBot.Trader.TradeRules
         {
             TradeHolders = tradeHolders;
         }
+
+        internal abstract Task ExecuteAsync(BitstampTrader bitstampTrader);
     }
 }

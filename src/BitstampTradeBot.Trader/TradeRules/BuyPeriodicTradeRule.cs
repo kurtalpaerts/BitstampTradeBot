@@ -11,7 +11,7 @@ using BitstampTradeBot.Trader.TradeHolders;
 
 namespace BitstampTradeBot.Trader.TradeRules
 {
-    public class BuyPeriodicTradeRule : TradeRuleBase, ITradeRule
+    public class BuyPeriodicTradeRule : TradeRuleBase
     {
         private readonly BitstampPairCode _pairCode;
         private readonly TimeSpan _period;
@@ -24,7 +24,7 @@ namespace BitstampTradeBot.Trader.TradeRules
             _lastBuyTimestamp = DateTime.Now.Add(period);
         }
 
-        public async Task ExecuteAsync(BitstampTrader bitstampTrader)
+        internal override async Task ExecuteAsync(BitstampTrader bitstampTrader)
         {
             if (TradeHolders != null)
             {
