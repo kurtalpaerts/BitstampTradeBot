@@ -63,10 +63,6 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BitstampTradeBot.Models\BitstampTradeBot.Models.csproj">
-      <Project>{a0eff6d3-3ccd-4577-8660-9a018701a6a1}</Project>
-      <Name>BitstampTradeBot.Models</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BitstampTradeBot.Trader\BitstampTradeBot.Trader.csproj">
       <Project>{29303796-c990-4c5a-9dc1-e6c62858dd84}</Project>
       <Name>BitstampTradeBot.Trader</Name>

@@ -1,4 +1,4 @@
-﻿namespace BitstampTradeBot.Models
+﻿namespace BitstampTradeBot.Trader.Models
 {
     public class Settings
     {

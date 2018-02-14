@@ -1,7 +1,7 @@
 ﻿using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 
-namespace BitstampTradeBot.Data.Models
+namespace BitstampTradeBot.Trader.Data.Models
 {
     public class AppDbContext : DbContext
     {

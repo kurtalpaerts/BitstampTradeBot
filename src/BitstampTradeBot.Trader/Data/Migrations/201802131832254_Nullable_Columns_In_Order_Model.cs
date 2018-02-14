@@ -1,8 +1,7 @@
-namespace BitstampTradeBot.Data.Migrations
+using System.Data.Entity.Migrations;
+
+namespace BitstampTradeBot.Trader.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class Nullable_Columns_In_Order_Model : DbMigration
     {
         public override void Up()

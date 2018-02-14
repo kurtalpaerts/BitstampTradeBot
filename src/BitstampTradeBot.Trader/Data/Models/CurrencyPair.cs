@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace BitstampTradeBot.Data.Models
+namespace BitstampTradeBot.Trader.Data.Models
 {
     public sealed class CurrencyPair
     {

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace BitstampTradeBot.Models
+﻿namespace BitstampTradeBot.Trader.Models
 {
     public enum BitstampPairCode
     {

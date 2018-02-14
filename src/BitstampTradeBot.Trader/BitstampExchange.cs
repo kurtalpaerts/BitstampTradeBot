@@ -8,6 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using BitstampTradeBot.Models;
 using BitstampTradeBot.Models.Helpers;
+using BitstampTradeBot.Trader.Models;
+using BitstampTradeBot.Trader.Models.Exchange;
 using Newtonsoft.Json;
 
 namespace BitstampTradeBot.Trader

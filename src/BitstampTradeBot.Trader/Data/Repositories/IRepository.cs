@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BitstampTradeBot.Data.Repositories
+namespace BitstampTradeBot.Trader.Data.Repositories
 {
     public interface IRepository<T>
     {

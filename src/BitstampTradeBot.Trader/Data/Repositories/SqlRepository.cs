@@ -4,7 +4,7 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 
-namespace BitstampTradeBot.Data.Repositories
+namespace BitstampTradeBot.Trader.Data.Repositories
 {
     public class SqlRepository<T> : IRepository<T> where T : class
     {

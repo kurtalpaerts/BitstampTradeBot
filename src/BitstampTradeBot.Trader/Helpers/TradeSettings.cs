@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BitstampTradeBot.Models;
 using BitstampTradeBot.Models.Helpers;
+using BitstampTradeBot.Trader.Models.Exchange;
 
 namespace BitstampTradeBot.Trader.Helpers
 {

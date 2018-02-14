@@ -1,8 +1,7 @@
-namespace BitstampTradeBot.Data.Migrations
+using System.Data.Entity.Migrations;
+
+namespace BitstampTradeBot.Trader.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class CurrencyPair_FK_In_Order_Model : DbMigration
     {
         public override void Up()

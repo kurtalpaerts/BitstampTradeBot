@@ -9,13 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitstampTradeBot.Console", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitstampTradeBot.Test", "BitstampTradeBot.Test\BitstampTradeBot.Test.csproj", "{0AB61CAF-E35D-49AD-B395-A31496E5B8D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitstampTradeBot.Data", "BitstampTradeBot.Data\BitstampTradeBot.Data.csproj", "{561F9A5A-6965-4E40-BE30-71EF6AC87D72}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitstampTradeBot.Trader", "BitstampTradeBot.Trader\BitstampTradeBot.Trader.csproj", "{29303796-C990-4C5A-9DC1-E6C62858DD84}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitstampTradeBot.Wpf", "BitstampTradeBot.Wpf\BitstampTradeBot.Wpf.csproj", "{18716530-E36A-4260-9279-70D196AD4ADF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitstampTradeBot.Models", "BitstampTradeBot.Models\BitstampTradeBot.Models.csproj", "{A0EFF6D3-3CCD-4577-8660-9A018701A6A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +27,6 @@ Global
 		{0AB61CAF-E35D-49AD-B395-A31496E5B8D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AB61CAF-E35D-49AD-B395-A31496E5B8D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AB61CAF-E35D-49AD-B395-A31496E5B8D2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{561F9A5A-6965-4E40-BE30-71EF6AC87D72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{561F9A5A-6965-4E40-BE30-71EF6AC87D72}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{561F9A5A-6965-4E40-BE30-71EF6AC87D72}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{561F9A5A-6965-4E40-BE30-71EF6AC87D72}.Release|Any CPU.Build.0 = Release|Any CPU
 		{29303796-C990-4C5A-9DC1-E6C62858DD84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{29303796-C990-4C5A-9DC1-E6C62858DD84}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29303796-C990-4C5A-9DC1-E6C62858DD84}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -43,10 +35,6 @@ Global
 		{18716530-E36A-4260-9279-70D196AD4ADF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18716530-E36A-4260-9279-70D196AD4ADF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18716530-E36A-4260-9279-70D196AD4ADF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A0EFF6D3-3CCD-4577-8660-9A018701A6A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A0EFF6D3-3CCD-4577-8660-9A018701A6A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A0EFF6D3-3CCD-4577-8660-9A018701A6A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A0EFF6D3-3CCD-4577-8660-9A018701A6A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

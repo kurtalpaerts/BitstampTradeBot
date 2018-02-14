@@ -4,10 +4,12 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using BitstampTradeBot.Data.Models;
-using BitstampTradeBot.Data.Repositories;
 using BitstampTradeBot.Models;
+using BitstampTradeBot.Trader.Data.Models;
+using BitstampTradeBot.Trader.Data.Repositories;
 using BitstampTradeBot.Trader.Helpers;
+using BitstampTradeBot.Trader.Models;
+using BitstampTradeBot.Trader.Models.Exchange;
 using BitstampTradeBot.Trader.TradeRules;
 using Ninject;
 

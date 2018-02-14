@@ -1,5 +1,5 @@
-﻿using BitstampTradeBot.Data.Models;
-using BitstampTradeBot.Data.Repositories;
+﻿using BitstampTradeBot.Trader.Data.Models;
+using BitstampTradeBot.Trader.Data.Repositories;
 using Ninject.Modules;
 
 namespace BitstampTradeBot.Trader.Helpers

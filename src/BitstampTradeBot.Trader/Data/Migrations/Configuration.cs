@@ -1,19 +1,20 @@
 using System;
+using System.Data.Entity.Migrations;
 using BitstampTradeBot.Data.Helpers;
 using BitstampTradeBot.Models;
-using System.Data.Entity.Migrations;
-using BitstampTradeBot.Data.Models;
+using BitstampTradeBot.Trader.Data.Models;
+using BitstampTradeBot.Trader.Models;
 
-namespace BitstampTradeBot.Data.Migrations
+namespace BitstampTradeBot.Trader.Migrations
 {
-    internal sealed class Configuration : DbMigrationsConfiguration<BitstampTradeBot.Data.Models.AppDbContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<AppDbContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(BitstampTradeBot.Data.Models.AppDbContext context)
+        protected override void Seed(AppDbContext context)
         {
             // loop through all currency pair codes and add to database
             var pairCodeEnums = Enum.GetValues(typeof(BitstampPairCode));

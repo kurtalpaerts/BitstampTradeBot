@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BitstampTradeBot.Data.Models
+namespace BitstampTradeBot.Trader.Data.Models
 {
     public class MinMaxLog
     {

@@ -56,26 +56,45 @@
   <ItemGroup>
     <Compile Include="BitstampExchange.cs" />
     <Compile Include="BitstampTrader.cs" />
+    <Compile Include="Data\Models\AppDbContext.cs" />
+    <Compile Include="Data\Models\CurrencyPair.cs" />
+    <Compile Include="Data\Models\MinMaxLog.cs" />
+    <Compile Include="Data\Models\Order.cs" />
+    <Compile Include="Data\Repositories\IRepository.cs" />
+    <Compile Include="Data\Repositories\SqlRepository.cs" />
     <Compile Include="Helpers\CacheHelper.cs" />
     <Compile Include="Helpers\CurrencyPairCalculator.cs" />
+    <Compile Include="Helpers\DbSetExtensions.cs" />
+    <Compile Include="Helpers\EnumExtensions.cs" />
     <Compile Include="Helpers\NinjectBindings.cs" />
     <Compile Include="Helpers\TradeSettings.cs" />
+    <Compile Include="Data\Migrations\201802101557099_Initial.cs" />
+    <Compile Include="Data\Migrations\201802101557099_Initial.Designer.cs">
+      <DependentUpon>201802101557099_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Migrations\201802131753597_CurrencyPair_FK_In_Order_Model.cs" />
+    <Compile Include="Data\Migrations\201802131753597_CurrencyPair_FK_In_Order_Model.Designer.cs">
+      <DependentUpon>201802131753597_CurrencyPair_FK_In_Order_Model.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Migrations\201802131832254_Nullable_Columns_In_Order_Model.cs" />
+    <Compile Include="Data\Migrations\201802131832254_Nullable_Columns_In_Order_Model.Designer.cs">
+      <DependentUpon>201802131832254_Nullable_Columns_In_Order_Model.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Migrations\Configuration.cs" />
+    <Compile Include="Models\ApiKeys.cs" />
+    <Compile Include="Models\Enums.cs" />
+    <Compile Include="Models\Exchange\BitstampAccountBalance.cs" />
+    <Compile Include="Models\Exchange\BitstampOrder.cs" />
+    <Compile Include="Models\Exchange\BitstampTicker.cs" />
+    <Compile Include="Models\Exchange\BitstampTradingPairInfo.cs" />
+    <Compile Include="Models\Exchange\BitstampTransaction.cs" />
+    <Compile Include="Models\Settings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TradeHolders\ITradeHolder.cs" />
     <Compile Include="TradeHolders\WaitPeriodAfterBuyOrderHolder.cs" />
     <Compile Include="TradeHolders\WaitPeriodAfterStartHolder.cs" />
     <Compile Include="TradeRules\BuyPeriodicTradeRule.cs" />
     <Compile Include="TradeRules\TradeRuleBase.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BitstampTradeBot.Data\BitstampTradeBot.Data.csproj">
-      <Project>{561f9a5a-6965-4e40-be30-71ef6ac87d72}</Project>
-      <Name>BitstampTradeBot.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BitstampTradeBot.Models\BitstampTradeBot.Models.csproj">
-      <Project>{a0eff6d3-3ccd-4577-8660-9a018701a6a1}</Project>
-      <Name>BitstampTradeBot.Models</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -85,5 +104,17 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data\Migrations\201802101557099_Initial.resx">
+      <DependentUpon>201802101557099_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Data\Migrations\201802131753597_CurrencyPair_FK_In_Order_Model.resx">
+      <DependentUpon>201802131753597_CurrencyPair_FK_In_Order_Model.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Data\Migrations\201802131832254_Nullable_Columns_In_Order_Model.resx">
+      <DependentUpon>201802131832254_Nullable_Columns_In_Order_Model.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
