@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using BitstampTradeBot.Data.Models;
 using BitstampTradeBot.Data.Repositories;
 using BitstampTradeBot.Models;
-using BitstampTradeBot.Models.Helpers;
 using BitstampTradeBot.Trader.Helpers;
 using BitstampTradeBot.Trader.TradeHolders;
 
@@ -15,7 +14,7 @@ namespace BitstampTradeBot.Trader.TradeRules
     {
         private readonly BitstampPairCode _pairCode;
 
-        public BuyPeriodicTradeRule(BitstampPairCode pairCode, params ITradeHolder[] tradeHolders) : base(tradeHolders)
+        public BuyPeriodicTradeRule(BitstampPairCode pairCode, TradeSettings tradeSettings, params ITradeHolder[] tradeHolders) : base(tradeSettings, tradeHolders)
         {
             _pairCode = pairCode;
         }
@@ -35,14 +34,9 @@ namespace BitstampTradeBot.Trader.TradeRules
 
             // get the pair code id from cache
             var pairCodeId = CacheHelper.GetFromCache<List<CurrencyPair>>("TradingPairsDb").First(c => c.PairCode == _pairCode.ToString()).Id;
-
-            // calculate price and amount
-            var tradingPairInfo = CacheHelper.GetFromCache<List<BitstampTradingPairInfo>>("TradingPairInfo").First(i => i.UrlSymbol == _pairCode.ToLower());
-            var price = Math.Round(ticker.Last * 0.9M, tradingPairInfo.CounterDecimals);
-            var amount = Math.Round(CurrencyPairCalculator.AmountBase(price, 10), tradingPairInfo.BaseDecimals);
-
+            
             // buy currency on Bitstamp exchange
-            var orderResult = await bitstampTrader.BuyLimitOrderAsync(_pairCode, amount, price);
+            var orderResult = await bitstampTrader.BuyLimitOrderAsync(_pairCode, TradeSettings.GetBaseAmount(ticker), TradeSettings.GetBasePrice(ticker));
 
             // update database
             var ordersRepo = new SqlRepository<Order>(new AppDbContext());

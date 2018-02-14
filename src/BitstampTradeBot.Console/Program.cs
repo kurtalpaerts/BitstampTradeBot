@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using BitstampTradeBot.Models;
 using BitstampTradeBot.Trader;
 using BitstampTradeBot.Trader.TradeRules;
 using BitstampTradeBot.Models.Helpers;
+using BitstampTradeBot.Trader.Helpers;
 using BitstampTradeBot.Trader.TradeHolders;
 
 namespace BitstampTradeBot.Console
@@ -19,8 +19,8 @@ namespace BitstampTradeBot.Console
             {
                 // initialize trader
                 _trader = new BitstampTrader(5000,
-                    new BuyPeriodicTradeRule(BitstampPairCode.BtcUsd,
-                        new WaitPeriodAfterStartHolder(TimeSpan.FromSeconds(60)),
+                    new BuyPeriodicTradeRule(BitstampPairCode.BtcUsd, new TradeSettings { BuyUnderPriceMargin = 10, CounterAmount = 10 },
+                        new WaitPeriodAfterStartHolder(TimeSpan.FromSeconds(0)),
                         new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromSeconds(3600)))
                  );
                 _trader.ErrorOccured += ErrorOccured;
