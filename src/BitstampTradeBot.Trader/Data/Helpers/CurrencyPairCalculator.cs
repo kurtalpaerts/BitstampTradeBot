@@ -1,6 +1,4 @@
-﻿using BitstampTradeBot.Models;
-
-namespace BitstampTradeBot.Trader.Helpers
+﻿namespace BitstampTradeBot.Trader.Data.Helpers
 {
     class CurrencyPairCalculator
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BitstampTradeBot.Models.Helpers
+namespace BitstampTradeBot.Trader.Data.Helpers
 {
     public static class EnumExtensions
     {

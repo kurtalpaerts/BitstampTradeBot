@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Globalization;
-using BitstampTradeBot.Models;
 using BitstampTradeBot.Trader;
+using BitstampTradeBot.Trader.Data.Helpers;
 using BitstampTradeBot.Trader.TradeRules;
-using BitstampTradeBot.Models.Helpers;
-using BitstampTradeBot.Trader.Helpers;
 using BitstampTradeBot.Trader.Models;
 using BitstampTradeBot.Trader.Models.Exchange;
 using BitstampTradeBot.Trader.TradeHolders;

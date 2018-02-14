@@ -2,7 +2,7 @@
 using BitstampTradeBot.Trader.Data.Repositories;
 using Ninject.Modules;
 
-namespace BitstampTradeBot.Trader.Helpers
+namespace BitstampTradeBot.Trader.Data.Helpers
 {
     public class NinjectBindings : NinjectModule
     {

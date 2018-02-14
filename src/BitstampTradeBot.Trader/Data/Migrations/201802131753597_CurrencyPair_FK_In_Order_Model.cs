@@ -1,6 +1,6 @@
 using System.Data.Entity.Migrations;
 
-namespace BitstampTradeBot.Trader.Migrations
+namespace BitstampTradeBot.Trader.Data.Migrations
 {
     public partial class CurrencyPair_FK_In_Order_Model : DbMigration
     {

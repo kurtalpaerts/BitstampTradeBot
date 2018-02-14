@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Caching;
 
-namespace BitstampTradeBot.Trader.Helpers
+namespace BitstampTradeBot.Trader.Data.Helpers
 {
     static class CacheHelper
     {

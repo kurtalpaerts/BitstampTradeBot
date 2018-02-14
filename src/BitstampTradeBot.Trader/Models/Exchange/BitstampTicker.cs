@@ -1,5 +1,4 @@
 ﻿using System;
-using BitstampTradeBot.Models;
 using Newtonsoft.Json;
 
 namespace BitstampTradeBot.Trader.Models.Exchange

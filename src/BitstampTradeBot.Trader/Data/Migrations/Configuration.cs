@@ -1,11 +1,10 @@
 using System;
 using System.Data.Entity.Migrations;
-using BitstampTradeBot.Data.Helpers;
-using BitstampTradeBot.Models;
+using BitstampTradeBot.Trader.Data.Helpers;
 using BitstampTradeBot.Trader.Data.Models;
 using BitstampTradeBot.Trader.Models;
 
-namespace BitstampTradeBot.Trader.Migrations
+namespace BitstampTradeBot.Trader.Data.Migrations
 {
     internal sealed class Configuration : DbMigrationsConfiguration<AppDbContext>
     {

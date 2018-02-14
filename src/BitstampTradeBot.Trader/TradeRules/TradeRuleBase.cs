@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BitstampTradeBot.Trader.Helpers;
+using BitstampTradeBot.Trader.Data.Helpers;
 using BitstampTradeBot.Trader.TradeHolders;
 
 namespace BitstampTradeBot.Trader.TradeRules

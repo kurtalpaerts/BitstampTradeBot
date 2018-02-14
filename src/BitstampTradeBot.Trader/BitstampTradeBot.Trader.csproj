@@ -62,12 +62,12 @@
     <Compile Include="Data\Models\Order.cs" />
     <Compile Include="Data\Repositories\IRepository.cs" />
     <Compile Include="Data\Repositories\SqlRepository.cs" />
-    <Compile Include="Helpers\CacheHelper.cs" />
-    <Compile Include="Helpers\CurrencyPairCalculator.cs" />
-    <Compile Include="Helpers\DbSetExtensions.cs" />
-    <Compile Include="Helpers\EnumExtensions.cs" />
-    <Compile Include="Helpers\NinjectBindings.cs" />
-    <Compile Include="Helpers\TradeSettings.cs" />
+    <Compile Include="Data\Helpers\CacheHelper.cs" />
+    <Compile Include="Data\Helpers\CurrencyPairCalculator.cs" />
+    <Compile Include="Data\Helpers\DbSetExtensions.cs" />
+    <Compile Include="Data\Helpers\EnumExtensions.cs" />
+    <Compile Include="Data\Helpers\NinjectBindings.cs" />
+    <Compile Include="Data\Helpers\TradeSettings.cs" />
     <Compile Include="Data\Migrations\201802101557099_Initial.cs" />
     <Compile Include="Data\Migrations\201802101557099_Initial.Designer.cs">
       <DependentUpon>201802101557099_Initial.cs</DependentUpon>
