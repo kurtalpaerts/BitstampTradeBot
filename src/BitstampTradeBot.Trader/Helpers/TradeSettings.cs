@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BitstampTradeBot.Trader.Data.Helpers;
 using BitstampTradeBot.Trader.Models.Exchange;
 
-namespace BitstampTradeBot.Trader.Data.Helpers
+namespace BitstampTradeBot.Trader.Helpers
 {
     public class TradeSettings
     {

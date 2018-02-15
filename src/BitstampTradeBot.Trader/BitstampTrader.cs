@@ -24,7 +24,7 @@ namespace BitstampTradeBot.Trader
         private Timer _mainTimer;
         private readonly int _dueTime;
         private readonly List<TradeRuleBase> _traderRules;
-        private readonly BitstampExchange BitstampExchange;
+        private readonly BitstampExchange _bitstampExchange;
         private readonly IRepository<MinMaxLog> _minMaxLogRepository;
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<CurrencyPair> _currencyPairRepository;
@@ -41,7 +41,7 @@ namespace BitstampTradeBot.Trader
             _dueTime = dueTime;
             _traderRules = tradeRules.ToList();
 
-            BitstampExchange = new BitstampExchange();
+            _bitstampExchange = new BitstampExchange();
             CacheHelper.SaveTocache("TradingPairsDb", _currencyPairRepository.ToList(), DateTime.MaxValue);
         }
 
@@ -86,7 +86,7 @@ namespace BitstampTradeBot.Trader
 
         internal async Task<BitstampTicker> GetTickerAsync(BitstampPairCode pairCode)
         {
-            var ticker = await BitstampExchange.GetTickerAsync(pairCode);
+            var ticker = await _bitstampExchange.GetTickerAsync(pairCode);
             TickerRetrieved?.Invoke(this, ticker);
 
             UpdateMinMaxLog(pairCode, ticker);
@@ -96,7 +96,7 @@ namespace BitstampTradeBot.Trader
 
         internal async Task<BitstampOrder> BuyLimitOrderAsync(BitstampPairCode pairCode, decimal amount, decimal price)
         {
-            var executedOrder = await BitstampExchange.BuyLimitOrderAsync(pairCode, amount, price);
+            var executedOrder = await _bitstampExchange.BuyLimitOrderAsync(pairCode, amount, price);
             BuyLimitOrderPlaced?.Invoke(this, executedOrder);
 
             return executedOrder;
@@ -136,7 +136,7 @@ namespace BitstampTradeBot.Trader
         {
             if (!CacheHelper.IsIncache("TradingPairInfo"))
             {
-                var pairsInfo = await BitstampExchange.GetPairsInfoAsync();
+                var pairsInfo = await _bitstampExchange.GetPairsInfoAsync();
 
                 // cache the pairsinfo for 4 hours to reduce the number of api calls, Bitstamp allows only 600 calls per 10 minutes
                 CacheHelper.SaveTocache("TradingPairInfo", pairsInfo, DateTime.Now.AddHours(4));

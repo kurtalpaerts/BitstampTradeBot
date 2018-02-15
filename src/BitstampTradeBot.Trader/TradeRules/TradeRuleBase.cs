@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using BitstampTradeBot.Trader.Data.Helpers;
+using BitstampTradeBot.Trader.Helpers;
 using BitstampTradeBot.Trader.TradeHolders;
 
 namespace BitstampTradeBot.Trader.TradeRules
@@ -9,15 +10,20 @@ namespace BitstampTradeBot.Trader.TradeRules
     public abstract class TradeRuleBase
     {
         protected readonly TradeSettings TradeSettings;
-        protected IEnumerable<ITradeHolder> TradeHolders;
+        private readonly IEnumerable<ITradeHolder> _tradeHolders;
         internal DateTime LastBuyTimestamp;
 
         protected TradeRuleBase(TradeSettings tradeSettings, params ITradeHolder[] tradeHolders)
         {
             TradeSettings = tradeSettings;
-            TradeHolders = tradeHolders;
+            _tradeHolders = tradeHolders;
         }
 
         internal abstract Task ExecuteAsync(BitstampTrader bitstampTrader);
+
+        internal bool ExecuteTradeHolders()
+        {
+            return _tradeHolders != null && _tradeHolders.Any(tradeHolder => tradeHolder.Execute(this));
+        }
     }
 }

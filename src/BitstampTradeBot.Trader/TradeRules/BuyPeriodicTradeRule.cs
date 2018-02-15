@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BitstampTradeBot.Trader.Data.Helpers;
 using BitstampTradeBot.Trader.Data.Models;
 using BitstampTradeBot.Trader.Data.Repositories;
+using BitstampTradeBot.Trader.Helpers;
 using BitstampTradeBot.Trader.Models;
 using BitstampTradeBot.Trader.TradeHolders;
 
@@ -21,13 +22,7 @@ namespace BitstampTradeBot.Trader.TradeRules
 
         internal override async Task ExecuteAsync(BitstampTrader bitstampTrader)
         {
-            if (TradeHolders != null)
-            {
-                foreach (var tradeHolder in TradeHolders)
-                {
-                    if (tradeHolder.Execute(this)) return;
-                }
-            }
+            if (ExecuteTradeHolders()) return;
 
             // get ticker
             var ticker = await bitstampTrader.GetTickerAsync(_pairCode);
