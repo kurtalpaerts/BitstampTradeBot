@@ -4,7 +4,6 @@ using BitstampTradeBot.Trader;
 using BitstampTradeBot.Trader.Data.Helpers;
 using BitstampTradeBot.Trader.Helpers;
 using BitstampTradeBot.Trader.TradeRules;
-using BitstampTradeBot.Trader.Models;
 using BitstampTradeBot.Trader.Models.Exchange;
 using BitstampTradeBot.Trader.TradeHolders;
 
@@ -19,11 +18,13 @@ namespace BitstampTradeBot.Console
             try
             {
                 // initialize trader
-                _trader = new BitstampTrader(5000,
-                    new BuyPeriodicTradeRule(BitstampPairCode.BtcUsd, new TradeSettings { BuyUnderPriceMargin = 10, CounterAmount = 10 },
-                        new WaitPeriodAfterStartHolder(TimeSpan.FromSeconds(0)),
-                        new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromSeconds(3600)))
-                 );
+                _trader = new BitstampTrader(5000);
+                var tradeRule = new BuyPeriodicTradeRule(new TradeSettings { BuyUnderPriceMargin = 10, CounterAmount = 10 },
+                                                                new WaitPeriodAfterStartHolder(TimeSpan.FromSeconds(0)),
+                                                                new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromSeconds(3600)));
+                _trader.AddTradeRule(tradeRule);
+
+
                 _trader.ErrorOccured += ErrorOccured;
                 _trader.TickerRetrieved += TickerRetrieved;
                 _trader.BuyLimitOrderPlaced += BuyLimitOrderPlaced;

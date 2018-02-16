@@ -23,13 +23,13 @@ namespace BitstampTradeBot.Trader
         private static int _counter;
         private Timer _mainTimer;
         private readonly int _dueTime;
-        private readonly List<TradeRuleBase> _traderRules;
+        private readonly List<TradeRuleBase> _traderRules = new List<TradeRuleBase>();
         private readonly BitstampExchange _bitstampExchange;
         private readonly IRepository<MinMaxLog> _minMaxLogRepository;
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<CurrencyPair> _currencyPairRepository;
 
-        public BitstampTrader(int dueTime, params TradeRuleBase[] tradeRules)
+        public BitstampTrader(int dueTime)
         {
             // Ninject
             var kernel = new StandardKernel();
@@ -39,10 +39,14 @@ namespace BitstampTradeBot.Trader
             _currencyPairRepository = kernel.Get<IRepository<CurrencyPair>>();
 
             _dueTime = dueTime;
-            _traderRules = tradeRules.ToList();
 
             _bitstampExchange = new BitstampExchange();
             CacheHelper.SaveTocache("TradingPairsDb", _currencyPairRepository.ToList(), DateTime.MaxValue);
+        }
+
+        public void AddTradeRule(TradeRuleBase tradeRule)
+        {
+            _traderRules.Add(tradeRule);
         }
 
         public void Start()
@@ -102,7 +106,7 @@ namespace BitstampTradeBot.Trader
             return executedOrder;
         }
 
-        #endregion
+        #endregion proxy methods
 
         #region helpers
 
