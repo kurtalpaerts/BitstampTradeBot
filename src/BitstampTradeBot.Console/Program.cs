@@ -44,24 +44,24 @@ namespace BitstampTradeBot.Console
             }
         }
 
-        private static void SellLimitOrderPlaced(object sender, BitstampOrder order)
+        private static void SellLimitOrderPlaced(object sender, BitstampOrderEventArgs e)
         {
-            System.Console.WriteLine($"Sell order placed for {order.Amount} {order.PairCode.BaseCodeUpper()} @{order.Price} {order.PairCode.CounterCodeUpper()} ({order.Amount * order.Price} {order.PairCode.CounterCodeUpper()})");
+            System.Console.WriteLine($"Sell e placed for {e.Order.Amount} {e.Order.PairCode.BaseCodeUpper()} @{e.Order.Price} {e.Order.PairCode.CounterCodeUpper()} ({e.Order.Amount * e.Order.Price} {e.Order.PairCode.CounterCodeUpper()})");
         }
 
-        private static void BuyLimitOrderExecuted(object sender, Order order)
+        private static void BuyLimitOrderExecuted(object sender, BitstampOrderEventArgs order)
         {
-            System.Console.WriteLine($"Buy order executed for {order.BuyAmount} {order.CurrencyPair.PairCode.Substring(0,3).ToUpper()} @{order.BuyPrice} {order.CurrencyPair.PairCode.Substring(3,3).ToUpper()}");
+            System.Console.WriteLine($"Buy e executed for {order.Order.Amount} {order.Order.PairCode.ToString().Substring(0,3).ToUpper()} @{order.Order.Price} {order.Order.PairCode.ToString().Substring(3,3).ToUpper()}");
         }
 
-        private static void BuyLimitOrderPlaced(object sender, BitstampOrder order)
+        private static void BuyLimitOrderPlaced(object sender, BitstampOrderEventArgs e)
         {
-            System.Console.WriteLine($"Buy order placed for {order.Amount} {order.PairCode.BaseCodeUpper()} @{order.Price} {order.PairCode.CounterCodeUpper()} ({order.Amount * order.Price} {order.PairCode.CounterCodeUpper()})");
+            System.Console.WriteLine($"Buy e placed for {e.Order.Amount} {e.Order.PairCode.BaseCodeUpper()} @{e.Order.Price} {e.Order.PairCode.CounterCodeUpper()} ({e.Order.Amount * e.Order.Price} {e.Order.PairCode.CounterCodeUpper()})");
         }
 
-        private static void TickerRetrieved(object sender, BitstampTicker ticker)
+        private static void TickerRetrieved(object sender, BitstampTickerEventArgs e)
         {
-            System.Console.WriteLine($"{ticker.PairCode} : {ticker.Last.ToString("N8", new NumberFormatInfo { CurrencyDecimalDigits = 8 }) }  ");
+            System.Console.WriteLine($"{e.Ticker.PairCode} : {e.Ticker.Last.ToString("N8", new NumberFormatInfo { CurrencyDecimalDigits = 8 }) }  ");
         }
 
         private static void ErrorOccured(object sender, Exception e)
