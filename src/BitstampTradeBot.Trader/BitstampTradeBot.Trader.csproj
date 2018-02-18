@@ -67,19 +67,11 @@
     <Compile Include="Data\Helpers\EnumExtensions.cs" />
     <Compile Include="Data\Helpers\NinjectBindings.cs" />
     <Compile Include="Helpers\TradeSettings.cs" />
-    <Compile Include="Data\Migrations\201802101557099_Initial.cs" />
-    <Compile Include="Data\Migrations\201802101557099_Initial.Designer.cs">
-      <DependentUpon>201802101557099_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Data\Migrations\201802131753597_CurrencyPair_FK_In_Order_Model.cs" />
-    <Compile Include="Data\Migrations\201802131753597_CurrencyPair_FK_In_Order_Model.Designer.cs">
-      <DependentUpon>201802131753597_CurrencyPair_FK_In_Order_Model.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Data\Migrations\201802131832254_Nullable_Columns_In_Order_Model.cs" />
-    <Compile Include="Data\Migrations\201802131832254_Nullable_Columns_In_Order_Model.Designer.cs">
-      <DependentUpon>201802131832254_Nullable_Columns_In_Order_Model.cs</DependentUpon>
-    </Compile>
     <Compile Include="Data\Migrations\Configuration.cs" />
+    <Compile Include="Migrations\201802180844084_Initial.cs" />
+    <Compile Include="Migrations\201802180844084_Initial.Designer.cs">
+      <DependentUpon>201802180844084_Initial.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\ApiKeys.cs" />
     <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\Exchange\BitstampAccountBalance.cs" />
@@ -104,16 +96,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Data\Migrations\201802101557099_Initial.resx">
-      <DependentUpon>201802101557099_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Data\Migrations\201802131753597_CurrencyPair_FK_In_Order_Model.resx">
-      <DependentUpon>201802131753597_CurrencyPair_FK_In_Order_Model.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Data\Migrations\201802131832254_Nullable_Columns_In_Order_Model.resx">
-      <DependentUpon>201802131832254_Nullable_Columns_In_Order_Model.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201802180844084_Initial.resx">
+      <DependentUpon>201802180844084_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

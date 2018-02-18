@@ -31,7 +31,7 @@ namespace BitstampTradeBot.Trader.TradeRules
             var pairCodeId = CacheHelper.GetFromCache<List<CurrencyPair>>("TradingPairsDb").First(c => c.PairCode == TradeSettings.PairCode.ToString()).Id;
 
             // buy currency on Bitstamp exchange
-            var orderResult = await bitstampTrader.BuyLimitOrderAsync(TradeSettings.PairCode, TradeSettings.GetBaseAmount(ticker, pairInfo), TradeSettings.GetBasePrice(ticker, pairInfo));
+            var orderResult = await bitstampTrader.BuyLimitOrderAsync(TradeSettings.PairCode, TradeSettings.GetBuyBaseAmount(ticker, pairInfo), TradeSettings.GetBuyBasePrice(ticker, pairInfo));
 
             // update database
             var ordersRepo = new SqlRepository<Order>(new AppDbContext());
@@ -40,7 +40,9 @@ namespace BitstampTradeBot.Trader.TradeRules
                 BuyId = orderResult.Id,
                 CurrencyPairId = pairCodeId,
                 BuyAmount = orderResult.Amount,
-                BuyPrice = orderResult.Price
+                BuyPrice = orderResult.Price,
+                SellAmount = TradeSettings.GetSellBaseAmount(ticker, pairInfo),
+                SellPrice = TradeSettings.GetSellBasePrice(ticker, pairInfo)
             });
             ordersRepo.Save();
 

@@ -45,6 +45,74 @@ namespace BitstampTradeBot.Trader.Models.Exchange
         [JsonProperty(PropertyName = "bch")]
         public decimal Bch { get; set; }
 
+        [JsonIgnore]
+        public BitstampCurrencyCode CurrencySold
+        {
+            get
+            {
+                if (Usd < 0) return BitstampCurrencyCode.Usd;
+                if (Eur < 0) return BitstampCurrencyCode.Eur;
+                if (Btc < 0) return BitstampCurrencyCode.Btc;
+                if (Xrp < 0) return BitstampCurrencyCode.Xrp;
+                if (Ltc < 0) return BitstampCurrencyCode.Ltc;
+                if (Eth < 0) return BitstampCurrencyCode.Eth;
+                if (Bch < 0) return BitstampCurrencyCode.Bch;
+
+                throw new Exception("No sell currency found!");
+            }
+        }
+
+        [JsonIgnore]
+        public decimal AmountSold
+        {
+            get
+            {
+                if (Usd < 0) return Usd;
+                if (Eur < 0) return Eur;
+                if (Btc < 0) return Btc;
+                if (Xrp < 0) return Xrp;
+                if (Ltc < 0) return Ltc;
+                if (Eth < 0) return Eth;
+                if (Bch < 0) return Bch;
+
+                throw new Exception("No sell amount found!");
+            }
+        }
+
+        [JsonIgnore]
+        public BitstampCurrencyCode CurrencyBought
+        {
+            get
+            {
+                if (Usd > 0) return BitstampCurrencyCode.Usd;
+                if (Eur > 0) return BitstampCurrencyCode.Eur;
+                if (Btc > 0) return BitstampCurrencyCode.Btc;
+                if (Xrp > 0) return BitstampCurrencyCode.Xrp;
+                if (Ltc > 0) return BitstampCurrencyCode.Ltc;
+                if (Eth > 0) return BitstampCurrencyCode.Eth;
+                if (Bch > 0) return BitstampCurrencyCode.Bch;
+
+                throw new Exception("No buy currency found!");
+            }
+        }
+
+        [JsonIgnore]
+        public decimal AmountBought
+        {
+            get
+            {
+                if (Usd > 0) return Usd;
+                if (Eur > 0) return Eur;
+                if (Btc > 0) return Btc;
+                if (Xrp > 0) return Xrp;
+                if (Ltc > 0) return Ltc;
+                if (Eth > 0) return Eth;
+                if (Bch > 0) return Bch;
+
+                throw new Exception("No buy amount found!");
+            }
+        }
+
         // Exchange rate
         [JsonProperty(PropertyName = "btc_usd")]
         public decimal ExchangeRateBtcUsd { get; set; }
@@ -104,6 +172,30 @@ namespace BitstampTradeBot.Trader.Models.Exchange
         // Exchange rate
         [JsonProperty(PropertyName = "bch_btc")]
         public decimal ExchangeRateBchBtc { get; set; }
+
+        public decimal ExchangeRate
+        {
+            get
+            {
+                if (ExchangeRateBtcUsd > 0) return ExchangeRateBtcUsd;
+                if (ExchangeRateBtcEur > 0) return ExchangeRateBtcEur;
+                if (ExchangeRateEurUsd > 0) return ExchangeRateEurUsd;
+                if (ExchangeRateXrpUsd > 0) return ExchangeRateXrpUsd;
+                if (ExchangeRateXrpEur > 0) return ExchangeRateXrpEur;
+                if (ExchangeRateXrpBtc > 0) return ExchangeRateXrpBtc;
+                if (ExchangeRateLtcUsd > 0) return ExchangeRateLtcUsd;
+                if (ExchangeRateLtcEur > 0) return ExchangeRateLtcEur;
+                if (ExchangeRateLtcBtc > 0) return ExchangeRateLtcBtc;
+                if (ExchangeRateEthUsd > 0) return ExchangeRateEthUsd;
+                if (ExchangeRateEthEur > 0) return ExchangeRateEthEur;
+                if (ExchangeRateEthBtc > 0) return ExchangeRateEthBtc;
+                if (ExchangeRateBchUsd > 0) return ExchangeRateBchUsd;
+                if (ExchangeRateBchEur > 0) return ExchangeRateBchEur;
+                if (ExchangeRateBchBtc > 0) return ExchangeRateBchBtc;
+
+                throw new Exception("No exchange rate found!");
+            }
+        }
 
         // Transaction fee
         [JsonProperty(PropertyName = "fee")]

@@ -25,11 +25,11 @@ namespace BitstampTradeBot.Trader.Data.Models
         [Required]
         public long BuyId { get; set; }
 
-        public decimal? SellAmount { get; set; }
+        public decimal SellAmount { get; set; }
 
         public DateTime? SellTimestamp { get; set; }
 
-        public decimal? SellPrice { get; set; }
+        public decimal SellPrice { get; set; }
 
         public decimal? SellFee { get; set; }
 
