@@ -5,9 +5,6 @@ namespace BitstampTradeBot.Trader.Models.Exchange
 {
     public class BitstampTicker
     {
-        [JsonIgnore]
-        public BitstampPairCode PairCode { get; set; }
-
         // Last BTC price
         [JsonProperty(PropertyName = "last")]
         public decimal Last { get; set; }

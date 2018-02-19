@@ -25,7 +25,7 @@ namespace BitstampTradeBot.Trader.TradeRules
             var ticker = await bitstampTrader.GetTickerAsync(TradeSettings.PairCode);
 
             // get pair info
-            var pairInfo = CacheHelper.GetFromCache<List<BitstampTradingPairInfo>>("TradingPairInfo").First(i => i.UrlSymbol == ticker.PairCode.ToLower());
+            var pairInfo = CacheHelper.GetFromCache<List<BitstampTradingPairInfo>>("TradingPairInfo").First(i => i.UrlSymbol == TradeSettings.PairCode.ToLower());
 
             // get the pair code id from cache
             var pairCodeId = CacheHelper.GetFromCache<List<CurrencyPair>>("TradingPairsDb").First(c => c.PairCode == TradeSettings.PairCode.ToString()).Id;

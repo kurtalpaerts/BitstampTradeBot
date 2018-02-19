@@ -94,7 +94,7 @@ namespace BitstampTradeBot.Trader
         internal async Task<BitstampTicker> GetTickerAsync(BitstampPairCode pairCode)
         {
             var ticker = await _bitstampExchange.GetTickerAsync(pairCode);
-            TickerRetrieved?.Invoke(this, new BitstampTickerEventArgs(ticker));
+            TickerRetrieved?.Invoke(this, new BitstampTickerEventArgs(ticker, pairCode));
 
             UpdateMinMaxLog(pairCode, ticker);
 
@@ -104,6 +104,9 @@ namespace BitstampTradeBot.Trader
         internal async Task<BitstampOrder> BuyLimitOrderAsync(BitstampPairCode pairCode, decimal amount, decimal price)
         {
             var executedOrder = await _bitstampExchange.BuyLimitOrderAsync(pairCode, amount, price);
+
+            if (executedOrder.Id == 0) throw new Exception("Buy order not executed (order id = 0)");
+
             BuyLimitOrderPlaced?.Invoke(this, new BitstampOrderEventArgs(executedOrder));
 
             return executedOrder; 
@@ -175,6 +178,9 @@ namespace BitstampTradeBot.Trader
                     // sell currency on Bitstamp exchange
                     var currencyPair = (BitstampPairCode)Enum.Parse(typeof(BitstampPairCode), order.CurrencyPair.PairCode);
                     var orderResult = await _bitstampExchange.SellLimitOrderAsync(currencyPair, Math.Round(order.SellAmount, pairInfo.BaseDecimals), Math.Round(order.SellPrice, pairInfo.CounterDecimals));
+
+                    if (orderResult.Id == 0) throw new Exception("Sell order not executed (order id = 0)");
+
                     SellLimitOrderPlaced?.Invoke(this, new BitstampOrderEventArgs(orderResult));
 
                     // update order in database

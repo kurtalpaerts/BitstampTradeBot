@@ -2,7 +2,6 @@
 using System.Globalization;
 using BitstampTradeBot.Trader;
 using BitstampTradeBot.Trader.Data.Helpers;
-using BitstampTradeBot.Trader.Data.Models;
 using BitstampTradeBot.Trader.Helpers;
 using BitstampTradeBot.Trader.Models;
 using BitstampTradeBot.Trader.TradeRules;
@@ -21,7 +20,7 @@ namespace BitstampTradeBot.Console
             {
                 // initialize trader
                 _trader = new BitstampTrader(10000);
-                var tradeRule = new BuyPeriodicTradeRule(new TradeSettings { PairCode = BitstampPairCode.BtcEur, BuyUnderPriceMargin = 1, CounterAmount = 10, BaseAmountSavingsRate = 3, SellPriceRate = 15 },
+                var tradeRule = new BuyPeriodicTradeRule(new TradeSettings { PairCode = BitstampPairCode.BtcEur, BuyUnderPriceMargin = 1, CounterAmount = 2, BaseAmountSavingsRate = 3, SellPriceRate = 15 },
                                                                 new WaitPeriodAfterStartHolder(TimeSpan.FromSeconds(0)),
                                                                 new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromSeconds(3600)));
                 _trader.AddTradeRule(tradeRule);
@@ -61,7 +60,7 @@ namespace BitstampTradeBot.Console
 
         private static void TickerRetrieved(object sender, BitstampTickerEventArgs e)
         {
-            System.Console.WriteLine($"{e.Ticker.PairCode} : {e.Ticker.Last.ToString("N8", new NumberFormatInfo { CurrencyDecimalDigits = 8 }) }  ");
+            System.Console.WriteLine($"{e.PairCode} : {e.Ticker.Last.ToString("N8", new NumberFormatInfo { CurrencyDecimalDigits = 8 }) }  ");
         }
 
         private static void ErrorOccured(object sender, Exception e)

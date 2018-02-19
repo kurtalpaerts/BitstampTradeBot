@@ -15,6 +15,90 @@ namespace BitstampTradeBot.Trader
 {
     public class BitstampExchange
     {
+        #region public methods
+
+        public async Task<BitstampTicker> GetTickerAsync(BitstampPairCode pairCode)
+        {
+            return await ApiCallGet<BitstampTicker>("ticker/" + pairCode.ToLower());
+        }
+
+        public async Task<List<BitstampTradingPairInfo>> GetPairsInfoAsync()
+        {
+            return await ApiCallGet<List<BitstampTradingPairInfo>>("trading-pairs-info");
+        }
+
+        public async Task<BitstampAccountBalance> GetAccountBalanceAsync()
+        {
+            return await ApiCallPost<BitstampAccountBalance>("balance");
+        }
+
+        public async Task<List<BitstampOrder>> GetOpenOrdersAsync()
+        {
+            return await ApiCallPost<List<BitstampOrder>>("open_orders/all");
+        }
+
+        public async Task<List<BitstampTransaction>> GetTransactions()
+        {
+            return await ApiCallPost<List<BitstampTransaction>>("user_transactions");
+        }
+
+        public async Task<BitstampOrder> CancelOrderAsync(string id)
+        {
+            return await ApiCallPost<BitstampOrder>("cancel_order",
+                    new KeyValuePair<string, string>("id", id)
+            );
+        }
+
+        public async Task<BitstampOrder> BuyLimitOrderAsync(BitstampPairCode pairCode, decimal amount, decimal price)
+        {
+            return await ApiCallPost<BitstampOrder>("buy/" + pairCode.ToLower(),
+                    new KeyValuePair<string, string>("amount", amount.ToString(CultureInfo.InvariantCulture)),
+                    new KeyValuePair<string, string>("price", price.ToString(CultureInfo.InvariantCulture))
+            );
+        }
+
+        public async Task<BitstampOrder> SellLimitOrderAsync(BitstampPairCode pairCode, decimal amount, decimal price)
+        {
+            return await ApiCallPost<BitstampOrder>("sell/" + pairCode.ToLower(),
+                    new KeyValuePair<string, string>("amount", amount.ToString(CultureInfo.InvariantCulture)),
+                    new KeyValuePair<string, string>("price", price.ToString(CultureInfo.InvariantCulture))
+            );
+        }
+
+        #endregion public methods
+
+        #region private methods
+
+        private static async Task<T> ApiCallGet<T>(string endPoint)
+        {
+            using (var client = new HttpClient())
+            using (var response = await client.GetAsync($"{Settings.ApiBaseUrl}{endPoint}/"))
+            using (var content = response.Content)
+            {
+                var result = await content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<T>(result);
+            }
+        }
+
+        private async Task<T> ApiCallPost<T>(string endPoint, params KeyValuePair<string, string>[] postData)
+        {
+            var authPostData = GetAuthenticationPostData();
+            if (postData != null)
+            {
+                authPostData.AddRange(postData);
+            }
+
+            using (var client = new HttpClient())
+            using (var response = await client.PostAsync($"{Settings.ApiBaseUrl}{endPoint}/", new FormUrlEncodedContent(authPostData)))
+            using (var content = response.Content)
+            {
+                var result = await content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<T>(result);
+            }
+        }
+
+        #endregion private methods
+
         #region  Api authentication
 
         private long _nonce = DateTime.Now.Ticks;
@@ -55,102 +139,5 @@ namespace BitstampTradeBot.Trader
         }
 
         #endregion Api authentication
-
-        private async Task<T> ApiCallGet<T>(string endPoint)
-        {
-            using (var client = new HttpClient())
-            using (var response = await client.GetAsync(Settings.ApiBaseUrl + endPoint))
-            using (var content = response.Content)
-            {
-                var result = await content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<T>(result);
-            }
-        }
-
-        private async Task<T> ApiCallPost<T>(string endPoint, params KeyValuePair<string, string>[] postData)
-        {
-            var authPostData = GetAuthenticationPostData();
-            if (postData != null)
-            {
-                authPostData.AddRange(postData);
-            }
-
-            using (var client = new HttpClient())
-            using (var response = await client.PostAsync(Settings.ApiBaseUrl + endPoint, new FormUrlEncodedContent(authPostData)))
-            using (var content = response.Content)
-            {
-                var result = await content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<T>(result);
-            }
-        }
-
-        public async Task<BitstampTicker> GetTickerAsync(BitstampPairCode pairCode)
-        {
-            var ticker = await ApiCallGet<BitstampTicker>("ticker/" + pairCode.ToLower());
-            ticker.PairCode = pairCode;
-
-            return ticker;
-        }
-
-        public async Task<List<BitstampTradingPairInfo>> GetPairsInfoAsync()
-        {
-            return await ApiCallGet<List<BitstampTradingPairInfo>>("trading-pairs-info/");
-        }
-
-        public async Task<BitstampAccountBalance> GetAccountBalanceAsync()
-        {
-            return await ApiCallPost<BitstampAccountBalance>("balance/");
-        }
-
-        public async Task<List<BitstampOrder>> GetOpenOrdersAsync()
-        {
-            return await ApiCallPost<List<BitstampOrder>>("open_orders/all/");
-        }
-
-        public async Task<List<BitstampTransaction>> GetTransactions()
-        {
-            return await ApiCallPost<List<BitstampTransaction>>("user_transactions/");
-        }
-
-        public async Task<BitstampOrder> CancelOrderAsync(string id)
-        {
-            return await ApiCallPost<BitstampOrder>("cancel_order/", new KeyValuePair<string, string>("id", id));
-        }
-
-        public async Task<BitstampOrder> BuyLimitOrderAsync(BitstampPairCode pairCode, decimal amount, decimal price)
-        {
-            var postData = new[]
-            {
-                new KeyValuePair<string, string>("amount", amount.ToString(CultureInfo.InvariantCulture)),
-                new KeyValuePair<string, string>("price", price.ToString(CultureInfo.InvariantCulture))
-            };
-
-            var executedOrder = await ApiCallPost<BitstampOrder>("buy/" + pairCode.ToLower() + "/", postData);
-
-            // todo debug
-            if (executedOrder.Id == 0) throw new Exception("Executed buy order id == 0!");
-
-            executedOrder.PairCode = pairCode;
-
-            return executedOrder;
-        }
-
-        public async Task<BitstampOrder> SellLimitOrderAsync(BitstampPairCode pairCode, decimal amount, decimal price)
-        {
-            var postData = new[]
-            {
-                new KeyValuePair<string, string>("amount", amount.ToString(CultureInfo.InvariantCulture)),
-                new KeyValuePair<string, string>("price", price.ToString(CultureInfo.InvariantCulture))
-            };
-
-            var executedOrder = await ApiCallPost<BitstampOrder>("sell/" + pairCode.ToLower() + "/", postData);
-
-            // todo debug
-            if (executedOrder.Id == 0) throw new Exception("Executed buy order id == 0!");
-
-            executedOrder.PairCode = pairCode;
-
-            return executedOrder;
-        }
     }
 }
