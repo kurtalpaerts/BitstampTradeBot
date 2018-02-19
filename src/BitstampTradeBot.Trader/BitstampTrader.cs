@@ -106,7 +106,7 @@ namespace BitstampTradeBot.Trader
             var executedOrder = await _bitstampExchange.BuyLimitOrderAsync(pairCode, amount, price);
             BuyLimitOrderPlaced?.Invoke(this, new BitstampOrderEventArgs(executedOrder));
 
-            return executedOrder;
+            return executedOrder; 
         }
 
         #endregion proxy methods
@@ -141,13 +141,13 @@ namespace BitstampTradeBot.Trader
 
         private async Task CheckCurrencyBoughtAsync()
         {
-            await _bitstampExchange.GetOpenOrdersAsync();
+            var openOrders = await _bitstampExchange.GetOpenOrdersAsync();
 
             // loop through all open buy orders in db
             foreach (var order in _orderRepository.Where(o => o.BuyTimestamp == null).ToList())
             {
                 // can the order be found in the exchange orders?
-                if (_bitstampExchange.OpenOrders.All(o => o.Id != order.BuyId))
+                if (openOrders.All(o => o.Id != order.BuyId))
                 {
                     // order not found in the exchange orders, so the buy order has been executed --> sell the bought currency
 
