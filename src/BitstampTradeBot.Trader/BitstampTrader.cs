@@ -26,7 +26,7 @@ namespace BitstampTradeBot.Trader
         private Timer _mainTimer;
         private readonly int _dueTime;
         private readonly List<TradeRuleBase> _traderRules = new List<TradeRuleBase>();
-        private readonly BitstampExchange _bitstampExchange;
+        private readonly BitstampClient _bitstampClient;
         private readonly IRepository<MinMaxLog> _minMaxLogRepository;
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<CurrencyPair> _currencyPairRepository;
@@ -42,7 +42,7 @@ namespace BitstampTradeBot.Trader
 
             _dueTime = dueTime;
 
-            _bitstampExchange = new BitstampExchange();
+            _bitstampClient = new BitstampClient(ApiKeys.BitstampApiKey, ApiKeys.BitstampApiSecret, ApiKeys.BitstampCustomerId );
             CacheHelper.SaveTocache("TradingPairsDb", _currencyPairRepository.ToList(), DateTime.MaxValue);
         }
 
@@ -93,7 +93,7 @@ namespace BitstampTradeBot.Trader
 
         internal async Task<BitstampTicker> GetTickerAsync(BitstampPairCode pairCode)
         {
-            var ticker = await _bitstampExchange.GetTickerAsync(pairCode);
+            var ticker = await _bitstampClient.GetTickerAsync(pairCode.ToString());
             TickerRetrieved?.Invoke(this, new BitstampTickerEventArgs(ticker, pairCode));
 
             UpdateMinMaxLog(pairCode, ticker);
@@ -103,7 +103,7 @@ namespace BitstampTradeBot.Trader
 
         internal async Task<BitstampOrder> BuyLimitOrderAsync(BitstampPairCode pairCode, decimal amount, decimal price)
         {
-            var executedOrder = await _bitstampExchange.BuyLimitOrderAsync(pairCode, amount, price);
+            var executedOrder = await _bitstampClient.BuyLimitOrderAsync(pairCode.ToString(), amount, price);
 
             if (executedOrder.Id == 0) throw new Exception("Buy order not executed (order id = 0)");
 
@@ -144,7 +144,7 @@ namespace BitstampTradeBot.Trader
 
         private async Task CheckCurrencyBoughtAsync()
         {
-            var openOrders = await _bitstampExchange.GetOpenOrdersAsync();
+            var openOrders = await _bitstampClient.GetOpenOrdersAsync();
 
             // loop through all open buy orders in db
             foreach (var order in _orderRepository.Where(o => o.BuyTimestamp == null).ToList())
@@ -155,7 +155,7 @@ namespace BitstampTradeBot.Trader
                     // order not found in the exchange orders, so the buy order has been executed --> sell the bought currency
 
                     // update buyprice
-                    var transactions = await _bitstampExchange.GetTransactions();
+                    var transactions = await _bitstampClient.GetTransactions();
                     var transaction = transactions.First(t => t.OrderId == order.BuyId);
                     if (order.BuyPrice != transaction.ExchangeRate())
                     {
@@ -176,8 +176,8 @@ namespace BitstampTradeBot.Trader
                     var pairInfo = CacheHelper.GetFromCache<List<BitstampTradingPairInfo>>("TradingPairInfo").First(i => i.UrlSymbol == order.CurrencyPair.PairCode.ToLower());
 
                     // sell currency on Bitstamp exchange
-                    var currencyPair = (BitstampPairCode)Enum.Parse(typeof(BitstampPairCode), order.CurrencyPair.PairCode);
-                    var orderResult = await _bitstampExchange.SellLimitOrderAsync(currencyPair, Math.Round(order.SellAmount, pairInfo.BaseDecimals), Math.Round(order.SellPrice, pairInfo.CounterDecimals));
+                    var pairCode = (BitstampPairCode)Enum.Parse(typeof(BitstampPairCode), order.CurrencyPair.PairCode);
+                    var orderResult = await _bitstampClient.SellLimitOrderAsync(pairCode.ToString(), Math.Round(order.SellAmount, pairInfo.BaseDecimals), Math.Round(order.SellPrice, pairInfo.CounterDecimals));
 
                     if (orderResult.Id == 0) throw new Exception("Sell order not executed (order id = 0)");
 
@@ -195,7 +195,7 @@ namespace BitstampTradeBot.Trader
         {
             if (!CacheHelper.IsIncache("TradingPairInfo"))
             {
-                var pairsInfo = await _bitstampExchange.GetPairsInfoAsync();
+                var pairsInfo = await _bitstampClient.GetPairsInfoAsync();
 
                 // cache the pairsinfo for 4 hours to reduce the number of api calls, Bitstamp allows only 600 calls per 10 minutes
                 CacheHelper.SaveTocache("TradingPairInfo", pairsInfo, DateTime.Now.AddHours(4));

@@ -6,18 +6,29 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using BitstampTradeBot.Trader.Data.Helpers;
-using BitstampTradeBot.Trader.Models;
 using BitstampTradeBot.Trader.Models.Exchange;
 using Newtonsoft.Json;
 
 namespace BitstampTradeBot.Trader
 {
-    public class BitstampExchange
+    public class BitstampClient
     {
+        public const string ApiBaseUrl = "https://www.bitstamp.net/api/v2/";
+
+        private readonly string _apiKey;
+        private readonly string _apiSecret;
+        private readonly string _customerId;
+        
+        public BitstampClient(string apiKey, string apiSecret, string customerId)
+        {
+            _apiKey = apiKey;
+            _apiSecret = apiSecret;
+            _customerId = customerId;
+        }
+
         #region public methods
 
-        public async Task<BitstampTicker> GetTickerAsync(BitstampPairCode pairCode)
+        public async Task<BitstampTicker> GetTickerAsync(string pairCode)
         {
             return await ApiCallGet<BitstampTicker>("ticker/" + pairCode.ToLower());
         }
@@ -49,7 +60,7 @@ namespace BitstampTradeBot.Trader
             );
         }
 
-        public async Task<BitstampOrder> BuyLimitOrderAsync(BitstampPairCode pairCode, decimal amount, decimal price)
+        public async Task<BitstampOrder> BuyLimitOrderAsync(string pairCode, decimal amount, decimal price)
         {
             return await ApiCallPost<BitstampOrder>("buy/" + pairCode.ToLower(),
                     new KeyValuePair<string, string>("amount", amount.ToString(CultureInfo.InvariantCulture)),
@@ -57,7 +68,7 @@ namespace BitstampTradeBot.Trader
             );
         }
 
-        public async Task<BitstampOrder> SellLimitOrderAsync(BitstampPairCode pairCode, decimal amount, decimal price)
+        public async Task<BitstampOrder> SellLimitOrderAsync(string pairCode, decimal amount, decimal price)
         {
             return await ApiCallPost<BitstampOrder>("sell/" + pairCode.ToLower(),
                     new KeyValuePair<string, string>("amount", amount.ToString(CultureInfo.InvariantCulture)),
@@ -72,7 +83,7 @@ namespace BitstampTradeBot.Trader
         private static async Task<T> ApiCallGet<T>(string endPoint)
         {
             using (var client = new HttpClient())
-            using (var response = await client.GetAsync($"{Settings.ApiBaseUrl}{endPoint}/"))
+            using (var response = await client.GetAsync($"{ApiBaseUrl}{endPoint}/"))
             using (var content = response.Content)
             {
                 var result = await content.ReadAsStringAsync();
@@ -89,7 +100,7 @@ namespace BitstampTradeBot.Trader
             }
 
             using (var client = new HttpClient())
-            using (var response = await client.PostAsync($"{Settings.ApiBaseUrl}{endPoint}/", new FormUrlEncodedContent(authPostData)))
+            using (var response = await client.PostAsync($"{ApiBaseUrl}{endPoint}/", new FormUrlEncodedContent(authPostData)))
             using (var content = response.Content)
             {
                 var result = await content.ReadAsStringAsync();
@@ -109,8 +120,8 @@ namespace BitstampTradeBot.Trader
 
             return new List<KeyValuePair<string, string>>
             {
-                new KeyValuePair<string, string>("key", ApiKeys.BitstampApiKey),
-                new KeyValuePair<string, string>("signature", GetSignature(_nonce, ApiKeys.BitstampApiKey, ApiKeys.BitstampApiSecret, ApiKeys.BitstampCustomerId)),
+                new KeyValuePair<string, string>("key", _apiKey),
+                new KeyValuePair<string, string>("signature", GetSignature(_nonce, _apiKey, _apiSecret, _customerId)),
                 new KeyValuePair<string, string>("nonce", _nonce.ToString())
             };
         }
