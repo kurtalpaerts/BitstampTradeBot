@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitstampTradeBot.Trader", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitstampTradeBot.Wpf", "BitstampTradeBot.Wpf\BitstampTradeBot.Wpf.csproj", "{18716530-E36A-4260-9279-70D196AD4ADF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitstampTradeBot.Exchange", "BitstampTradeBot.Exchange\BitstampTradeBot.Exchange.csproj", "{567F6DA5-5598-4F13-AF03-FE2171ACAAFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{18716530-E36A-4260-9279-70D196AD4ADF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18716530-E36A-4260-9279-70D196AD4ADF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18716530-E36A-4260-9279-70D196AD4ADF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{567F6DA5-5598-4F13-AF03-FE2171ACAAFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{567F6DA5-5598-4F13-AF03-FE2171ACAAFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{567F6DA5-5598-4F13-AF03-FE2171ACAAFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{567F6DA5-5598-4F13-AF03-FE2171ACAAFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

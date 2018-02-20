@@ -6,10 +6,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using BitstampTradeBot.Trader.Models.Exchange;
+using BitstampTradeBot.Exchange.Models;
 using Newtonsoft.Json;
 
-namespace BitstampTradeBot.Trader
+namespace BitstampTradeBot.Exchange
 {
     public class BitstampClient
     {

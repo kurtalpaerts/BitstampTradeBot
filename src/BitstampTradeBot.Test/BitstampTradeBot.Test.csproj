@@ -52,6 +52,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BitstampTradeBot.Exchange\BitstampTradeBot.Exchange.csproj">
+      <Project>{567f6da5-5598-4f13-af03-fe2171acaafc}</Project>
+      <Name>BitstampTradeBot.Exchange</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BitstampTradeBot.Trader\BitstampTradeBot.Trader.csproj">
       <Project>{29303796-c990-4c5a-9dc1-e6c62858dd84}</Project>
       <Name>BitstampTradeBot.Trader</Name>

@@ -1,4 +1,5 @@
 ﻿using System;
+using BitstampTradeBot.Exchange.Models;
 
 namespace BitstampTradeBot.Trader.Models.Exchange
 {

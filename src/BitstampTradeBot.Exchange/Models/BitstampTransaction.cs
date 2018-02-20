@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using BitstampTradeBot.Trader.Models.Exchange.Attributes;
 using Newtonsoft.Json;
 
-namespace BitstampTradeBot.Trader.Models.Exchange
+namespace BitstampTradeBot.Exchange.Models
 {
     public class BitstampTransaction
     {

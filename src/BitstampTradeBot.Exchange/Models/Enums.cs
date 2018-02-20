@@ -1,4 +1,4 @@
-﻿namespace BitstampTradeBot.Trader.Models
+﻿namespace BitstampTradeBot.Exchange.Models
 {
     public enum BitstampPairCode
     {

@@ -1,5 +1,5 @@
-﻿using BitstampTradeBot.Trader.Helpers;
-using BitstampTradeBot.Trader.Models.Exchange;
+﻿using BitstampTradeBot.Exchange.Models;
+using BitstampTradeBot.Trader.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BitstampTradeBot.Test
