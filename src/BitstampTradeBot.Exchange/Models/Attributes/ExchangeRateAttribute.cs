@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace BitstampTradeBot.Trader.Models.Exchange.Attributes
+namespace BitstampTradeBot.Exchange.Models.Attributes
 {
-    class ExchangeRateAttribute : Attribute
+    internal class ExchangeRateAttribute : Attribute
     {
     }
 }

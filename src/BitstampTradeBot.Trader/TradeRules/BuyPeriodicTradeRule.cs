@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BitstampTradeBot.Exchange.Models;
+using BitstampTradeBot.Models;
 using BitstampTradeBot.Trader.Data.Helpers;
 using BitstampTradeBot.Trader.Data.Models;
 using BitstampTradeBot.Trader.Data.Repositories;
 using BitstampTradeBot.Trader.Helpers;
-using BitstampTradeBot.Trader.Models.Exchange;
 using BitstampTradeBot.Trader.TradeHolders;
 
 namespace BitstampTradeBot.Trader.TradeRules
@@ -26,7 +25,7 @@ namespace BitstampTradeBot.Trader.TradeRules
             var ticker = await bitstampTrader.GetTickerAsync(TradeSettings.PairCode);
 
             // get pair info
-            var pairInfo = CacheHelper.GetFromCache<List<BitstampTradingPairInfo>>("TradingPairInfo").First(i => i.UrlSymbol == TradeSettings.PairCode.ToLower());
+            var pairInfo = CacheHelper.GetFromCache<List<TradingPairInfo>>("TradingPairInfo").First(i => i.PairCode == TradeSettings.PairCode.ToLower());
 
             // get the pair code id from cache
             var pairCodeId = CacheHelper.GetFromCache<List<CurrencyPair>>("TradingPairsDb").First(c => c.PairCode == TradeSettings.PairCode.ToString()).Id;

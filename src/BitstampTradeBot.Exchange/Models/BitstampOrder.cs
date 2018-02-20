@@ -3,13 +3,10 @@ using Newtonsoft.Json;
 
 namespace BitstampTradeBot.Exchange.Models
 {
-    public enum BitstampOrderType { Buy = 0, Sell = 1 }
+    internal enum BitstampOrderType { Buy = 0, Sell = 1 }
 
-    public class BitstampOrder
+    internal class BitstampOrder
     {
-        [JsonIgnore]
-        public BitstampPairCode PairCode { get; set; }
-
         // transaction ID
         [JsonProperty(PropertyName = "id")]
         public long Id { get; set; }

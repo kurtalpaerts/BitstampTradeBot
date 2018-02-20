@@ -1,14 +1,14 @@
 ﻿using System;
-using BitstampTradeBot.Exchange.Models;
+using BitstampTradeBot.Models;
 
 namespace BitstampTradeBot.Trader.Models.Exchange
 {
     public class BitstampTickerEventArgs : EventArgs
     {
-        public BitstampTicker Ticker { get;  }
-        public BitstampPairCode PairCode { get; }
+        public Ticker Ticker { get;  }
+        public string PairCode { get; }
 
-        public BitstampTickerEventArgs(BitstampTicker ticker, BitstampPairCode pairCode)
+        public BitstampTickerEventArgs(Ticker ticker, string pairCode)
         {
             Ticker = ticker;
             PairCode = pairCode;

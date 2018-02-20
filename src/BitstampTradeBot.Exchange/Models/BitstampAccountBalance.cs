@@ -2,7 +2,7 @@
 
 namespace BitstampTradeBot.Exchange.Models
 {
-    public class BitstampAccountBalance
+    internal class BitstampAccountBalance
     {
         // USD balance
         [JsonProperty(PropertyName = "usd_balance")]

@@ -1,4 +1,4 @@
-﻿using BitstampTradeBot.Exchange.Models;
+﻿using BitstampTradeBot.Models;
 using BitstampTradeBot.Trader.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -12,8 +12,8 @@ namespace BitstampTradeBot.Test
         {
             // arrange  
             var tradeSettings = new TradeSettings { CounterAmount = 10, BuyUnderPriceMargin = 1, BaseAmountSavingsRate = 5, SellPriceRate = 10};
-            var ticker = new BitstampTicker { Last = 9500 };
-            var pairInfo = new BitstampTradingPairInfo { BaseDecimals = 8, CounterDecimals = 2};
+            var ticker = new Ticker { Last = 9500 };
+            var pairInfo = new TradingPairInfo { BaseDecimals = 8, CounterDecimals = 2};
 
             // act  
             var baseAmount = tradeSettings.GetBuyBaseAmount(ticker, pairInfo);

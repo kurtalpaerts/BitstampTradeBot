@@ -1,13 +1,13 @@
 ﻿using System;
-using BitstampTradeBot.Exchange.Models;
+using BitstampTradeBot.Models;
 
 namespace BitstampTradeBot.Trader.Models.Exchange
 {
     public class BitstampOrderEventArgs : EventArgs
     {
-        public BitstampOrder Order { get; set; }
+        public ExchangeOrder Order { get; set; }
 
-        public BitstampOrderEventArgs(BitstampOrder order)
+        public BitstampOrderEventArgs(ExchangeOrder order)
         {
             Order = order;
         }

@@ -6,74 +6,88 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using BitstampTradeBot.Exchange.Models;
+using BitstampTradeBot.Models;
 using Newtonsoft.Json;
 
 namespace BitstampTradeBot.Exchange
 {
     public class BitstampClient
     {
-        public const string ApiBaseUrl = "https://www.bitstamp.net/api/v2/";
+        private const string ApiBaseUrl = "https://www.bitstamp.net/api/v2/";
 
         private readonly string _apiKey;
         private readonly string _apiSecret;
         private readonly string _customerId;
-        
+
         public BitstampClient(string apiKey, string apiSecret, string customerId)
         {
             _apiKey = apiKey;
             _apiSecret = apiSecret;
             _customerId = customerId;
+
+            InitializeMappings();
         }
 
         #region public methods
 
-        public async Task<BitstampTicker> GetTickerAsync(string pairCode)
+        public async Task<Ticker> GetTickerAsync(string pairCode)
         {
-            return await ApiCallGet<BitstampTicker>("ticker/" + pairCode.ToLower());
+            var bitstampTicker = await ApiCallGet<BitstampTicker>("ticker/" + pairCode.ToLower());
+            return Mapper.Map<BitstampTicker, Ticker>(bitstampTicker);
         }
 
-        public async Task<List<BitstampTradingPairInfo>> GetPairsInfoAsync()
+        public async Task<List<TradingPairInfo>> GetPairsInfoAsync()
         {
-            return await ApiCallGet<List<BitstampTradingPairInfo>>("trading-pairs-info");
+            var bitstampTradingPairInfos = await ApiCallGet<List<BitstampTradingPairInfo>>("trading-pairs-info");
+            return Mapper.Map<List<BitstampTradingPairInfo>, List<TradingPairInfo>>(bitstampTradingPairInfos);
         }
 
-        public async Task<BitstampAccountBalance> GetAccountBalanceAsync()
+        public async Task<AccountBalance> GetAccountBalanceAsync()
         {
-            return await ApiCallPost<BitstampAccountBalance>("balance");
+            var bitstampAccountBalance = await ApiCallPost<BitstampAccountBalance>("balance");
+            return Mapper.Map<BitstampAccountBalance, AccountBalance>(bitstampAccountBalance);
         }
 
-        public async Task<List<BitstampOrder>> GetOpenOrdersAsync()
+        public async Task<List<ExchangeOrder>> GetOpenOrdersAsync()
         {
-            return await ApiCallPost<List<BitstampOrder>>("open_orders/all");
+            var bitstampOrders = await ApiCallPost<List<BitstampOrder>>("open_orders/all");
+            return Mapper.Map<List<BitstampOrder>, List<ExchangeOrder>>(bitstampOrders);
         }
 
-        public async Task<List<BitstampTransaction>> GetTransactions()
+        public async Task<List<Transaction>> GetTransactions()
         {
-            return await ApiCallPost<List<BitstampTransaction>>("user_transactions");
+            var bitstampTransactions = await ApiCallPost<List<BitstampTransaction>>("user_transactions");
+            return Mapper.Map<List<BitstampTransaction>, List<Transaction>>(bitstampTransactions);
         }
 
-        public async Task<BitstampOrder> CancelOrderAsync(string id)
+        public async Task<ExchangeOrder> CancelOrderAsync(string id)
         {
-            return await ApiCallPost<BitstampOrder>("cancel_order",
-                    new KeyValuePair<string, string>("id", id)
-            );
+            var bitstampOrder = await ApiCallPost<BitstampOrder>("cancel_order", new KeyValuePair<string, string>("id", id));
+            return Mapper.Map<BitstampOrder, ExchangeOrder>(bitstampOrder);
         }
 
-        public async Task<BitstampOrder> BuyLimitOrderAsync(string pairCode, decimal amount, decimal price)
+        public async Task<ExchangeOrder> BuyLimitOrderAsync(string pairCode, decimal amount, decimal price)
         {
-            return await ApiCallPost<BitstampOrder>("buy/" + pairCode.ToLower(),
+            var bitstampOrder = await ApiCallPost<BitstampOrder>("buy/" + pairCode,
                     new KeyValuePair<string, string>("amount", amount.ToString(CultureInfo.InvariantCulture)),
                     new KeyValuePair<string, string>("price", price.ToString(CultureInfo.InvariantCulture))
             );
+
+            var order = Mapper.Map<BitstampOrder, ExchangeOrder>(bitstampOrder);
+            order.PairCode = pairCode;
+
+            return order;
         }
 
-        public async Task<BitstampOrder> SellLimitOrderAsync(string pairCode, decimal amount, decimal price)
+        public async Task<ExchangeOrder> SellLimitOrderAsync(string pairCode, decimal amount, decimal price)
         {
-            return await ApiCallPost<BitstampOrder>("sell/" + pairCode.ToLower(),
+            var bitstampOrder = await ApiCallPost<BitstampOrder>("sell/" + pairCode,
                     new KeyValuePair<string, string>("amount", amount.ToString(CultureInfo.InvariantCulture)),
                     new KeyValuePair<string, string>("price", price.ToString(CultureInfo.InvariantCulture))
             );
+            return Mapper.Map<BitstampOrder, ExchangeOrder>(bitstampOrder);
         }
 
         #endregion public methods
@@ -106,6 +120,18 @@ namespace BitstampTradeBot.Exchange
                 var result = await content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<T>(result);
             }
+        }
+
+        private static void InitializeMappings()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<BitstampTicker, Ticker>();
+                cfg.CreateMap<BitstampAccountBalance, AccountBalance>();
+                cfg.CreateMap<BitstampTradingPairInfo, TradingPairInfo>().ForMember(dest => dest.PairCode, opts => opts.MapFrom(src => src.UrlSymbol));
+                cfg.CreateMap<BitstampOrder, ExchangeOrder>();
+                cfg.CreateMap<BitstampTransaction, Transaction>().ForMember(dest => dest.Price, opts => opts.MapFrom(src => src.ExchangeRate));
+            });
         }
 
         #endregion private methods

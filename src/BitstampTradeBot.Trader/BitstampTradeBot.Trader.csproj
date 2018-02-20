@@ -99,6 +99,10 @@
       <Project>{567f6da5-5598-4f13-af03-fe2171acaafc}</Project>
       <Name>BitstampTradeBot.Exchange</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BitstampTradeBot.Models\BitstampTradeBot.Models.csproj">
+      <Project>{229c55cc-7719-4e42-85ab-d43c081249d2}</Project>
+      <Name>BitstampTradeBot.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

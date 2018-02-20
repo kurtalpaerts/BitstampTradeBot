@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace BitstampTradeBot.Exchange.Models
 {
-    public class BitstampTicker
+    internal class BitstampTicker
     {
         // Last BTC price
         [JsonProperty(PropertyName = "last")]
@@ -41,6 +41,7 @@ namespace BitstampTradeBot.Exchange.Models
         [JsonProperty(PropertyName = "open")]
         public decimal Open { get; set; }
 
+        [JsonIgnore]
         public DateTime Timestamp
         {
             get

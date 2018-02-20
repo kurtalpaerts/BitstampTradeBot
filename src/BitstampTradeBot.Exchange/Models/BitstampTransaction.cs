@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
-using BitstampTradeBot.Trader.Models.Exchange.Attributes;
+using BitstampTradeBot.Exchange.Models.Attributes;
 using Newtonsoft.Json;
 
 namespace BitstampTradeBot.Exchange.Models
 {
-    public class BitstampTransaction
+    internal class BitstampTransaction
     {
         // Date and time
         [JsonProperty(PropertyName = "datetime")]
@@ -137,50 +137,71 @@ namespace BitstampTradeBot.Exchange.Models
         [JsonProperty(PropertyName = "order_id")]
         public long OrderId { get; set; }
 
-        public decimal ExchangeRate()
-        {
-            var properties = GetType().GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(ExchangeRateAttribute)));
-            foreach (var property in properties)
-            {
-                var propValue = (decimal)property.GetValue(this, null);
-                if (propValue > 0)
-                {
-                    return propValue;
-                }
 
+        public decimal ExchangeRate
+        {
+            get
+            {
+                decimal price = 0;
+
+                var properties = GetType().GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(ExchangeRateAttribute)));
+                foreach (var property in properties)
+                {
+                    var propValue = (decimal)property.GetValue(this, null);
+                    if (propValue > 0)
+                    {
+                        price += propValue;
+                    }
+
+                }
+                return price;
             }
-            throw new Exception("No exchange rate found!");
         }
 
-        public decimal AmountSold()
-        {
-            var properties = GetType().GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(CurrencyAmountAttribute)));
-            foreach (var property in properties)
-            {
-                var propValue = (decimal)property.GetValue(this, null);
-                if (propValue < 0)
-                {
-                    return propValue;
-                }
+        //public decimal ExchangeRate()
+        //{
+        //    var properties = GetType().GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(ExchangeRateAttribute)));
+        //    foreach (var property in properties)
+        //    {
+        //        var propValue = (decimal)property.GetValue(this, null);
+        //        if (propValue > 0)
+        //        {
+        //            return propValue;
+        //        }
 
-            }
+        //    }
+        //    throw new Exception("No exchange rate found!");
+        //}
 
-            throw new Exception("No sell amount found!");
-        }
+        //public decimal AmountSold()
+        //{
+        //    var properties = GetType().GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(CurrencyAmountAttribute)));
+        //    foreach (var property in properties)
+        //    {
+        //        var propValue = (decimal)property.GetValue(this, null);
+        //        if (propValue < 0)
+        //        {
+        //            return propValue;
+        //        }
 
-        public decimal AmountBought()
-        {
-            var properties = GetType().GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(CurrencyAmountAttribute)));
-            foreach (var property in properties)
-            {
-                var propValue = (decimal)property.GetValue(this, null);
-                if (propValue > 0)
-                {
-                    return propValue;
-                }
-            }
+        //    }
 
-            throw new Exception("No buy amount found!");
-        }
+        //    throw new Exception("No sell amount found!");
+        //}
+
+        //public decimal AmountBought()
+        //{
+        //    var properties = GetType().GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(CurrencyAmountAttribute)));
+        //    foreach (var property in properties)
+        //    {
+        //        var propValue = (decimal)property.GetValue(this, null);
+        //        if (propValue > 0)
+        //        {
+        //            return propValue;
+        //        }
+        //    }
+
+        //    throw new Exception("No buy amount found!");
+        //}
     }
 }

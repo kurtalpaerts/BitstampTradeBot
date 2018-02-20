@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using BitstampTradeBot.Exchange;
-using BitstampTradeBot.Exchange.Models;
+using BitstampTradeBot.Models;
 using BitstampTradeBot.Trader.Data.Helpers;
 using BitstampTradeBot.Trader.Data.Models;
 using BitstampTradeBot.Trader.Data.Repositories;
@@ -67,6 +67,8 @@ namespace BitstampTradeBot.Trader
         {
             try
             {
+                var transactions = await _bitstampClient.GetTransactions();
+
                 await UpdateTradingPairsInfo();
                 await CheckCurrencyBoughtAsync();
                 await Trade();
@@ -93,9 +95,9 @@ namespace BitstampTradeBot.Trader
 
         #region proxy methods
 
-        internal async Task<BitstampTicker> GetTickerAsync(BitstampPairCode pairCode)
+        internal async Task<Ticker> GetTickerAsync(string pairCode)
         {
-            var ticker = await _bitstampClient.GetTickerAsync(pairCode.ToString());
+            var ticker = await _bitstampClient.GetTickerAsync(pairCode);
             TickerRetrieved?.Invoke(this, new BitstampTickerEventArgs(ticker, pairCode));
 
             UpdateMinMaxLog(pairCode, ticker);
@@ -103,9 +105,9 @@ namespace BitstampTradeBot.Trader
             return ticker;
         }
 
-        internal async Task<BitstampOrder> BuyLimitOrderAsync(BitstampPairCode pairCode, decimal amount, decimal price)
+        internal async Task<ExchangeOrder> BuyLimitOrderAsync(string pairCode, decimal amount, decimal price)
         {
-            var executedOrder = await _bitstampClient.BuyLimitOrderAsync(pairCode.ToString(), amount, price);
+            var executedOrder = await _bitstampClient.BuyLimitOrderAsync(pairCode.ToLower(), amount, price);
 
             if (executedOrder.Id == 0) throw new Exception("Buy order not executed (order id = 0)");
 
@@ -118,13 +120,13 @@ namespace BitstampTradeBot.Trader
 
         #region helpers
 
-        private void UpdateMinMaxLog(BitstampPairCode pairCode, BitstampTicker ticker)
+        private void UpdateMinMaxLog(string pairCode, Ticker ticker)
         {
             // get the record of the current day
             var currentDay = DateTime.Now.Date;
 
             // get the pair code id from cache
-            var pairCodeId = CacheHelper.GetFromCache<List<CurrencyPair>>("TradingPairsDb").First(c => c.PairCode == pairCode.ToString()).Id;
+            var pairCodeId = CacheHelper.GetFromCache<List<CurrencyPair>>("TradingPairsDb").First(c => c.PairCode == pairCode).Id;
 
             // get minMaxLog from database
             var minMaxLog = _minMaxLogRepository.ToList().FirstOrDefault(l => l.Day == currentDay && l.CurrencyPairId == pairCodeId);
@@ -158,24 +160,25 @@ namespace BitstampTradeBot.Trader
 
                     // update buyprice
                     var transactions = await _bitstampClient.GetTransactions();
-                    var transaction = transactions.First(t => t.OrderId == order.BuyId);
-                    if (order.BuyPrice != transaction.ExchangeRate())
+                    var transaction = transactions.First(t => t.Id == order.BuyId);
+                    if (order.BuyPrice != transaction.Price)
                     {
-                        order.BuyPrice = transaction.ExchangeRate();
+                        order.BuyPrice = transaction.Price;
                     }
                     order.BuyTimestamp = transaction.Timestamp;
 
-                    BuyLimitOrderExecuted?.Invoke(this, new BitstampOrderEventArgs(new BitstampOrder
-                    {
-                        Amount = order.BuyAmount,
-                        Price = order.BuyPrice,
-                        Id = order.BuyId,
-                        PairCode = (BitstampPairCode)Enum.Parse(typeof(BitstampPairCode), order.CurrencyPair.PairCode),
-                        Timestamp = transaction.Timestamp
-                    }));
+                    // todo
+                    //BuyLimitOrderExecuted?.Invoke(this, new BitstampOrderEventArgs(new BitstampOrder
+                    //{
+                    //    Amount = order.BuyAmount,
+                    //    Price = order.BuyPrice,
+                    //    Id = order.BuyId,
+                    //    PairCode = (BitstampPairCode)Enum.Parse(typeof(BitstampPairCode), order.CurrencyPair.PairCode),
+                    //    Timestamp = transaction.Timestamp
+                    //}));
 
                     // get pair info
-                    var pairInfo = CacheHelper.GetFromCache<List<BitstampTradingPairInfo>>("TradingPairInfo").First(i => i.UrlSymbol == order.CurrencyPair.PairCode.ToLower());
+                    var pairInfo = CacheHelper.GetFromCache<List<TradingPairInfo>>("TradingPairInfo").First(i => i.PairCode == order.CurrencyPair.PairCode.ToLower());
 
                     // sell currency on Bitstamp exchange
                     var pairCode = (BitstampPairCode)Enum.Parse(typeof(BitstampPairCode), order.CurrencyPair.PairCode);

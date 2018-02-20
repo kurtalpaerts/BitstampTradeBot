@@ -2,7 +2,7 @@
 
 namespace BitstampTradeBot.Exchange.Models
 {
-    public class BitstampTradingPairInfo
+    internal class BitstampTradingPairInfo
     {
         // Trading pair
         [JsonProperty(PropertyName = "name")]

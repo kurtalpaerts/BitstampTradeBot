@@ -1,6 +1,6 @@
 using System;
 using System.Data.Entity.Migrations;
-using BitstampTradeBot.Exchange.Models;
+using BitstampTradeBot.Models;
 using BitstampTradeBot.Trader.Data.Helpers;
 using BitstampTradeBot.Trader.Data.Models;
 
