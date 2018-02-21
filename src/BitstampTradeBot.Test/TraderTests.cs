@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace BitstampTradeBot.Test
 {
     [TestClass]
-    public class TradeSettingsTests
+    public class TraderTests
     {
         [TestMethod]
         public void BaseAmountAndPriceTestMethod()

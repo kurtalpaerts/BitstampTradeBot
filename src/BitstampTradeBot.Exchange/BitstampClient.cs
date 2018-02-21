@@ -34,7 +34,7 @@ namespace BitstampTradeBot.Exchange
 
         public async Task<Ticker> GetTickerAsync(string pairCode)
         {
-            var bitstampTicker = await ApiCallGet<BitstampTicker>("ticker/" + pairCode.ToLower());
+            var bitstampTicker = await ApiCallGet<BitstampTicker>("ticker/" + pairCode);
             return Mapper.Map<BitstampTicker, Ticker>(bitstampTicker);
         }
 
@@ -130,7 +130,7 @@ namespace BitstampTradeBot.Exchange
                 cfg.CreateMap<BitstampAccountBalance, AccountBalance>();
                 cfg.CreateMap<BitstampTradingPairInfo, TradingPairInfo>().ForMember(dest => dest.PairCode, opts => opts.MapFrom(src => src.UrlSymbol));
                 cfg.CreateMap<BitstampOrder, ExchangeOrder>();
-                cfg.CreateMap<BitstampTransaction, Transaction>().ForMember(dest => dest.Price, opts => opts.MapFrom(src => src.ExchangeRate));
+                cfg.CreateMap<BitstampTransaction, Transaction>().ForMember(dest => dest.Price, opts => opts.MapFrom(src => src.Price));
             });
         }
 

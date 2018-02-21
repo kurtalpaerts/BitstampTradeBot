@@ -67,7 +67,7 @@ namespace BitstampTradeBot.Trader
         {
             try
             {
-                var transactions = await _bitstampClient.GetTransactions();
+                var test = await _bitstampClient.GetTransactions();
 
                 await UpdateTradingPairsInfo();
                 await CheckCurrencyBoughtAsync();
