@@ -19,11 +19,11 @@ namespace BitstampTradeBot.Trader.TradeRules
 
         internal override async Task ExecuteAsync(BitstampTrader bitstampTrader)
         {
-            if (ExecuteTradeHolders()) return;
-            
             // get ticker
             var ticker = await bitstampTrader.GetTickerAsync(TradeSettings.PairCode);
 
+            if (ExecuteTradeHolders()) return;
+            
             // get pair info
             var pairInfo = CacheHelper.GetFromCache<List<TradingPairInfo>>("TradingPairInfo").First(i => i.PairCode == TradeSettings.PairCode.ToLower());
 

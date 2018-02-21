@@ -67,8 +67,6 @@ namespace BitstampTradeBot.Trader
         {
             try
             {
-                var test = await _bitstampClient.GetTransactions();
-
                 await UpdateTradingPairsInfo();
                 await CheckCurrencyBoughtAsync();
                 await Trade();
@@ -168,14 +166,14 @@ namespace BitstampTradeBot.Trader
                     order.BuyTimestamp = transaction.Timestamp;
 
                     // todo
-                    //BuyLimitOrderExecuted?.Invoke(this, new BitstampOrderEventArgs(new BitstampOrder
-                    //{
-                    //    Amount = order.BuyAmount,
-                    //    Price = order.BuyPrice,
-                    //    Id = order.BuyId,
-                    //    PairCode = (BitstampPairCode)Enum.Parse(typeof(BitstampPairCode), order.CurrencyPair.PairCode),
-                    //    Timestamp = transaction.Timestamp
-                    //}));
+                    BuyLimitOrderExecuted?.Invoke(this, new BitstampOrderEventArgs(new ExchangeOrder
+                    {
+                        Amount = order.BuyAmount,
+                        Price = order.BuyPrice,
+                        Id = order.BuyId,
+                        PairCode =  order.CurrencyPair.PairCode,
+                        Timestamp = transaction.Timestamp
+                    }));
 
                     // get pair info
                     var pairInfo = CacheHelper.GetFromCache<List<TradingPairInfo>>("TradingPairInfo").First(i => i.PairCode == order.CurrencyPair.PairCode.ToLower());

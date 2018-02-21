@@ -55,7 +55,6 @@
     <Compile Include="Models\BitstampTradingPairInfo.cs" />
     <Compile Include="Models\BitstampTransaction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\ApiKeys.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
