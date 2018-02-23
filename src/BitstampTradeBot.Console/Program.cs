@@ -22,15 +22,15 @@ namespace BitstampTradeBot.Console
                 var tradeSettings = new TradeSettings
                 {
                     PairCode = "btceur",
-                    BuyUnderPriceMargin = 5,
+                    BuyUnderPriceMargin = 2,
                     CounterAmount = 10,
                     BaseAmountSavingsRate = 3,
                     SellPriceRate = 15
                 };
                 var tradeRule = new BuyPeriodicTradeRule(_trader,tradeSettings,
                         //new WaitPeriodAfterStartHolder(TimeSpan.FromSeconds(0)),
-                        new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromSeconds(30)),
-                        new MaxNumberOfBuyOrdersHolder(2));
+                        new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(1)),
+                        new MaxNumberOfBuyOrdersHolder(1));
 
                 _trader.AddTradeRule(tradeRule);
 

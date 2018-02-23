@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitstampClient.cs" />
+    <Compile Include="Helpers\ApiCallCounter.cs" />
     <Compile Include="Models\Attributes\BitstampTransactionMemberAttribute.cs" />
     <Compile Include="Models\BitstampAccountBalance.cs" />
     <Compile Include="Models\BitstampOrder.cs" />

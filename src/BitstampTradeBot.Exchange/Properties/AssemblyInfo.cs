@@ -36,4 +36,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
 // for unit testing internals
+#if DEBUG
 [assembly: InternalsVisibleTo("BitstampTradeBot.Test")]
+#endif

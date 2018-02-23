@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using BitstampTradeBot.Exchange.Helpers;
 using BitstampTradeBot.Exchange.Models;
 using BitstampTradeBot.Models;
 using Newtonsoft.Json;
@@ -20,6 +21,7 @@ namespace BitstampTradeBot.Exchange
         private readonly string _apiKey;
         private readonly string _apiSecret;
         private readonly string _customerId;
+        private readonly ApiCallCounter _apiCallCounter = new ApiCallCounter();
 
         public BitstampClient(string apiKey, string apiSecret, string customerId)
         {
@@ -100,12 +102,15 @@ namespace BitstampTradeBot.Exchange
 
         #region private methods
 
-        private static async Task<T> ApiCallGet<T>(string endPoint)
+        private async Task<T> ApiCallGet<T>(string endPoint)
         {
+            _apiCallCounter.CheckIfMaximumReached();
+
             using (var client = new HttpClient())
             using (var response = await client.GetAsync($"{ApiBaseUrl}{endPoint}/"))
             using (var content = response.Content)
             {
+                _apiCallCounter.AddCall();
                 var result = await content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<T>(result);
             }
@@ -113,6 +118,8 @@ namespace BitstampTradeBot.Exchange
 
         private async Task<T> ApiCallPost<T>(string endPoint, params KeyValuePair<string, string>[] postData)
         {
+            _apiCallCounter.CheckIfMaximumReached();
+
             var authPostData = GetAuthenticationPostData();
             if (postData != null)
             {
@@ -123,6 +130,7 @@ namespace BitstampTradeBot.Exchange
             using (var response = await client.PostAsync($"{ApiBaseUrl}{endPoint}/", new FormUrlEncodedContent(authPostData)))
             using (var content = response.Content)
             {
+                _apiCallCounter.AddCall();
                 var result = await content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<T>(result);
             }

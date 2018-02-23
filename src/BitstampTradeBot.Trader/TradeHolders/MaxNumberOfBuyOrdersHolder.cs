@@ -12,6 +12,7 @@ namespace BitstampTradeBot.Trader.TradeHolders
         {
             _maxNumberOfBuyOrders = maxNumberOfBuyOrders;
         }
+        
         public bool Execute(TradeSession tradeSession)
         {
             var openOrders = tradeSession.OpenOrders.Where(o=> o.PairCode == tradeSession.PairCode);
