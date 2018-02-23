@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using BitstampTradeBot.Trader;
-using BitstampTradeBot.Trader.Helpers;
+using BitstampTradeBot.Trader.Models;
 using BitstampTradeBot.Trader.TradeRules;
 using BitstampTradeBot.Trader.Models.Exchange;
 using BitstampTradeBot.Trader.TradeHolders;
@@ -22,15 +22,15 @@ namespace BitstampTradeBot.Console
                 var tradeSettings = new TradeSettings
                 {
                     PairCode = "btceur",
-                    BuyUnderPriceMargin = 2,
+                    BuyUnderPriceMargin = 5,
                     CounterAmount = 10,
                     BaseAmountSavingsRate = 3,
                     SellPriceRate = 15
                 };
                 var tradeRule = new BuyPeriodicTradeRule(_trader,tradeSettings,
                         //new WaitPeriodAfterStartHolder(TimeSpan.FromSeconds(0)),
-                        new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromSeconds(3600)),
-                        new MaxNumberOfBuyOrdersHolder(1));
+                        new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromSeconds(30)),
+                        new MaxNumberOfBuyOrdersHolder(2));
 
                 _trader.AddTradeRule(tradeRule);
 

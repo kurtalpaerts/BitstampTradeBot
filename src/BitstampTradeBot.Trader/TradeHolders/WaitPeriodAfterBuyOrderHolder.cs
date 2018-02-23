@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
-using BitstampTradeBot.Trader.TradeRules;
+using BitstampTradeBot.Trader.Models;
 
 namespace BitstampTradeBot.Trader.TradeHolders
 {
@@ -13,9 +12,9 @@ namespace BitstampTradeBot.Trader.TradeHolders
             _period = period;
         }
 
-        public Task<bool> ExecuteAsync(TradeRuleBase tradeRule)
+        public bool Execute(TradeSession tradeSession)
         {
-            return Task.Run(() => DateTime.Now <= tradeRule.BitstampTrader.LastBuyTimestamp.Add(_period));
+            return tradeSession.Timestamp <= tradeSession.LastBuyTimestamp.Add(_period);
         }
     }
 }

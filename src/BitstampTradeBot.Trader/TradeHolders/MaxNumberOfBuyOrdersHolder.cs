@@ -1,7 +1,6 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using BitstampTradeBot.Models;
-using BitstampTradeBot.Trader.TradeRules;
+using BitstampTradeBot.Trader.Models;
 
 namespace BitstampTradeBot.Trader.TradeHolders
 {
@@ -13,11 +12,11 @@ namespace BitstampTradeBot.Trader.TradeHolders
         {
             _maxNumberOfBuyOrders = maxNumberOfBuyOrders;
         }
-        public async Task<bool> ExecuteAsync(TradeRuleBase tradeRule)
+        public bool Execute(TradeSession tradeSession)
         {
-            var openOrders = await tradeRule.BitstampTrader.OpenOrdersAsync(tradeRule.TradeSettings.PairCode);
+            var openOrders = tradeSession.OpenOrders.Where(o=> o.PairCode == tradeSession.PairCode);
 
-            return openOrders.Count(o => o.Type == BitstampOrderType.Buy) > _maxNumberOfBuyOrders;
+            return openOrders.Count(o => o.Type == BitstampOrderType.Buy) >= _maxNumberOfBuyOrders;
         }
     }
 }

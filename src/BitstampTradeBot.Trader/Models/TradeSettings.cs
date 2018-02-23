@@ -1,15 +1,15 @@
 ﻿using System;
 using BitstampTradeBot.Models;
 
-namespace BitstampTradeBot.Trader.Helpers
+namespace BitstampTradeBot.Trader.Models
 {
     public class TradeSettings
     {
         public string PairCode { get; set; }
-        public decimal BuyUnderPriceMargin { get; set; }
-        public decimal CounterAmount { get; set; }
-        public decimal BaseAmountSavingsRate { get; set; }
-        public decimal SellPriceRate { get; set; }
+        public decimal BuyUnderPriceMargin { private get; set; }
+        public decimal CounterAmount { private get; set; }
+        public decimal BaseAmountSavingsRate { private get; set; }
+        public decimal SellPriceRate { private get; set; }
 
         public decimal GetBuyBaseAmount(Ticker ticker, TradingPairInfo pairInfo)
         {
