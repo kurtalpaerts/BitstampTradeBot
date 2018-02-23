@@ -116,11 +116,6 @@ namespace BitstampTradeBot.Trader
             return executedOrder;
         }
 
-        //internal async Task<List<ExchangeOrder>> OpenOrdersAsync(string pairCode)
-        //{
-        //    return await _bitstampClient.GetOpenOrdersAsync(pairCode);
-        //}
-
         #endregion proxy methods
 
         #region helpers

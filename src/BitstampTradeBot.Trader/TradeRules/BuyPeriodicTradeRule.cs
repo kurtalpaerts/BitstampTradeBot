@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BitstampTradeBot.Models;
@@ -21,15 +20,15 @@ namespace BitstampTradeBot.Trader.TradeRules
         internal override async Task ExecuteAsync()
         {
             // get ticker
-            var ticker = await BitstampTrader.GetTickerAsync(TradeSettings.PairCode);
+            var ticker = await BitstampTrader.GetTickerAsync(TradeSession.PairCode);
 
-            if (ExecuteTradeHolders(TradeSession)) return;
+            if (ExecuteTradeHolders()) return;
             
             // get pair info
-            var pairInfo = CacheHelper.GetFromCache<List<TradingPairInfo>>("TradingPairInfo").First(i => i.PairCode == TradeSettings.PairCode.ToLower());
+            var pairInfo = CacheHelper.GetFromCache<List<TradingPairInfo>>("TradingPairInfo").First(i => i.PairCode == TradeSession.PairCode.ToLower());
 
             // get the pair code id from cache
-            var pairCodeId = CacheHelper.GetFromCache<List<CurrencyPair>>("TradingPairsDb").First(c => c.PairCode == TradeSettings.PairCode.ToString()).Id;
+            var pairCodeId = CacheHelper.GetFromCache<List<CurrencyPair>>("TradingPairsDb").First(c => c.PairCode == TradeSession.PairCode.ToString()).Id;
 
             // buy currency on Bitstamp exchange
             var orderResult = await BitstampTrader.BuyLimitOrderAsync(TradeSession, TradeSettings.GetBuyBaseAmount(ticker, pairInfo), TradeSettings.GetBuyBasePrice(ticker, pairInfo));

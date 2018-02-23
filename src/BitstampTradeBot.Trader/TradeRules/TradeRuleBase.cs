@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BitstampTradeBot.Trader.Models;
 using BitstampTradeBot.Trader.TradeHolders;
@@ -18,29 +19,21 @@ namespace BitstampTradeBot.Trader.TradeRules
         {
             BitstampTrader = bitstampTrader;
             TradeSettings = tradeSettings;
+            TradeSession.PairCode = tradeSettings.PairCode;
             _tradeHolders = tradeHolders;
         }
 
         internal abstract Task ExecuteAsync();
 
-        protected bool ExecuteTradeHolders(TradeSession tradeSession)
+        protected bool ExecuteTradeHolders()
         {
             if (_tradeHolders == null) return true;
 
-            tradeSession.Timestamp = DateTime.Now;
-            tradeSession.PairCode = TradeSettings.PairCode;
-            tradeSession.OpenOrders = BitstampTrader.OpenOrders;
+            TradeSession.Timestamp = DateTime.Now;
+            TradeSession.OpenOrders = BitstampTrader.OpenOrders;
 
-            foreach (var tradeHolder in _tradeHolders)
-            {
-                var result = tradeHolder.Execute(tradeSession);
-                if (result)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            // execute all holders and return true if 1 holder returns true
+            return _tradeHolders.Select(tradeHolder => tradeHolder.Execute(TradeSession)).Any(result => result);
         }
     }
 }
