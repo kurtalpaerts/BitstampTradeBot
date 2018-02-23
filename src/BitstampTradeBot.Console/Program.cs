@@ -17,12 +17,22 @@ namespace BitstampTradeBot.Console
             try
             {
                 // initialize trader
-                _trader = new BitstampTrader(10000);
-                var tradeRule = new BuyPeriodicTradeRule(new TradeSettings { PairCode = "btceur", BuyUnderPriceMargin = 10, CounterAmount = 10, BaseAmountSavingsRate = 3, SellPriceRate = 15 },
-                                                                new WaitPeriodAfterStartHolder(TimeSpan.FromSeconds(0)),
-                                                                new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromSeconds(3600)));
-                _trader.AddTradeRule(tradeRule);
+                _trader = new BitstampTrader(TimeSpan.FromSeconds(5));
+                
+                var tradeSettings = new TradeSettings
+                {
+                    PairCode = "btceur",
+                    BuyUnderPriceMargin = 2,
+                    CounterAmount = 10,
+                    BaseAmountSavingsRate = 3,
+                    SellPriceRate = 15
+                };
+                var tradeRule = new BuyPeriodicTradeRule(_trader,tradeSettings,
+                        //new WaitPeriodAfterStartHolder(TimeSpan.FromSeconds(0)),
+                        new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromSeconds(3600)),
+                        new MaxNumberOfBuyOrdersHolder(1));
 
+                _trader.AddTradeRule(tradeRule);
 
                 _trader.ErrorOccured += ErrorOccured;
                 _trader.TickerRetrieved += TickerRetrieved;
@@ -43,17 +53,17 @@ namespace BitstampTradeBot.Console
 
         private static void SellLimitOrderPlaced(object sender, BitstampOrderEventArgs e)
         {
-            System.Console.WriteLine($"Sell e placed for {e.Order.Amount} {e.Order.PairCode} @{e.Order.Price} {e.Order.PairCode} ({e.Order.Amount * e.Order.Price} {e.Order.PairCode})");
+            System.Console.WriteLine($"Sell order placed for {e.Order.Amount} {e.Order.PairCode} @{e.Order.Price} {e.Order.PairCode} ({e.Order.Amount * e.Order.Price} {e.Order.PairCode})");
         }
 
         private static void BuyLimitOrderExecuted(object sender, BitstampOrderEventArgs order)
         {
-            System.Console.WriteLine($"Buy e executed for {order.Order.Amount} {order.Order.PairCode.Substring(0, 3).ToUpper()} @{order.Order.Price} {order.Order.PairCode.Substring(3, 3).ToUpper()}");
+            System.Console.WriteLine($"Buy order executed for {order.Order.Amount} {order.Order.PairCode.Substring(0, 3).ToUpper()} @{order.Order.Price} {order.Order.PairCode.Substring(3, 3).ToUpper()}");
         }
 
         private static void BuyLimitOrderPlaced(object sender, BitstampOrderEventArgs e)
         {
-            System.Console.WriteLine($"Buy e placed for {e.Order.Amount} {e.Order.PairCode} @{e.Order.Price} {e.Order.PairCode} ({e.Order.Amount * e.Order.Price} {e.Order.PairCode})");
+            System.Console.WriteLine($"Buy order placed for {e.Order.Amount} {e.Order.PairCode} @{e.Order.Price} {e.Order.PairCode} ({e.Order.Amount * e.Order.Price} {e.Order.PairCode})");
         }
 
         private static void TickerRetrieved(object sender, BitstampTickerEventArgs e)

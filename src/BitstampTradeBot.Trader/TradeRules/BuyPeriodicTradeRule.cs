@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BitstampTradeBot.Models;
@@ -13,16 +12,18 @@ namespace BitstampTradeBot.Trader.TradeRules
 {
     public class BuyPeriodicTradeRule : TradeRuleBase
     {
-        public BuyPeriodicTradeRule(TradeSettings tradeSettings, params ITradeHolder[] tradeHolders) : base(tradeSettings, tradeHolders)
+        public BuyPeriodicTradeRule(BitstampTrader bitstampTrader, TradeSettings tradeSettings, params ITradeHolder[] tradeHolders) 
+            : base(bitstampTrader, tradeSettings, tradeHolders)
         {
         }
 
-        internal override async Task ExecuteAsync(BitstampTrader bitstampTrader)
+        internal override async Task ExecuteAsync()
         {
             // get ticker
-            var ticker = await bitstampTrader.GetTickerAsync(TradeSettings.PairCode);
+            var ticker = await BitstampTrader.GetTickerAsync(TradeSettings.PairCode);
 
-            if (ExecuteTradeHolders()) return;
+            var result = await ExecuteTradeHoldersAsync();
+            if (result) return;
             
             // get pair info
             var pairInfo = CacheHelper.GetFromCache<List<TradingPairInfo>>("TradingPairInfo").First(i => i.PairCode == TradeSettings.PairCode.ToLower());
@@ -31,7 +32,7 @@ namespace BitstampTradeBot.Trader.TradeRules
             var pairCodeId = CacheHelper.GetFromCache<List<CurrencyPair>>("TradingPairsDb").First(c => c.PairCode == TradeSettings.PairCode.ToString()).Id;
 
             // buy currency on Bitstamp exchange
-            var orderResult = await bitstampTrader.BuyLimitOrderAsync(TradeSettings.PairCode, TradeSettings.GetBuyBaseAmount(ticker, pairInfo), TradeSettings.GetBuyBasePrice(ticker, pairInfo));
+            var orderResult = await BitstampTrader.BuyLimitOrderAsync(TradeSettings.PairCode, TradeSettings.GetBuyBaseAmount(ticker, pairInfo), TradeSettings.GetBuyBasePrice(ticker, pairInfo));
 
             // update database
             var ordersRepo = new SqlRepository<Order>(new AppDbContext());
@@ -45,8 +46,6 @@ namespace BitstampTradeBot.Trader.TradeRules
                 SellPrice = TradeSettings.GetSellBasePrice(ticker, pairInfo)
             });
             ordersRepo.Save();
-
-            LastBuyTimestamp = DateTime.Now;
         }
     }
 }

@@ -1,9 +1,10 @@
-﻿using BitstampTradeBot.Trader.TradeRules;
+﻿using System.Threading.Tasks;
+using BitstampTradeBot.Trader.TradeRules;
 
 namespace BitstampTradeBot.Trader.TradeHolders
 {
     public interface ITradeHolder
     {
-        bool Execute(TradeRuleBase tradeRule);
+        Task<bool> ExecuteAsync(TradeRuleBase tradeRule);
     }
 }

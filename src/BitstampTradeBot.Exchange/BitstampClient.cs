@@ -56,7 +56,13 @@ namespace BitstampTradeBot.Exchange
             return Mapper.Map<List<BitstampOrder>, List<ExchangeOrder>>(bitstampOrders);
         }
 
-        public async Task<List<Transaction>> GetTransactions()
+        public async Task<List<ExchangeOrder>> GetOpenOrdersAsync(string pairCode)
+        {
+            var bitstampOrders = await ApiCallPost<List<BitstampOrder>>($"open_orders/{pairCode}");
+            return Mapper.Map<List<BitstampOrder>, List<ExchangeOrder>>(bitstampOrders);
+        }
+
+        public async Task<List<Transaction>> GetTransactionsAsync()
         {
             var bitstampTransactions = await ApiCallPost<List<BitstampTransaction>>("user_transactions");
             return Mapper.Map<List<BitstampTransaction>, List<Transaction>>(bitstampTransactions);
@@ -129,8 +135,11 @@ namespace BitstampTradeBot.Exchange
                 cfg.CreateMap<BitstampTicker, Ticker>();
                 cfg.CreateMap<BitstampAccountBalance, AccountBalance>();
                 cfg.CreateMap<BitstampTradingPairInfo, TradingPairInfo>().ForMember(dest => dest.PairCode, opts => opts.MapFrom(src => src.UrlSymbol));
-                cfg.CreateMap<BitstampOrder, ExchangeOrder>();
-                cfg.CreateMap<BitstampTransaction, Transaction>().ForMember(dest => dest.Price, opts => opts.MapFrom(src => src.Price));
+                cfg.CreateMap<BitstampOrder, ExchangeOrder>()
+                        .ForMember(dest => dest.PairCode, opts => opts.MapFrom(src => src.CurrencyPair.Replace("/","").ToLower()));
+                cfg.CreateMap<BitstampTransaction, Transaction>()
+                        .ForMember(dest => dest.Price, opts => opts.MapFrom(src => src.Price))
+                        .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.OrderId));
             });
         }
 

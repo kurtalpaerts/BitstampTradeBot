@@ -24,16 +24,18 @@ namespace BitstampTradeBot.Trader
         public event EventHandler<BitstampOrderEventArgs> BuyLimitOrderExecuted;
         public event EventHandler<BitstampOrderEventArgs> SellLimitOrderPlaced;
 
+        internal DateTime LastBuyTimestamp;
+
         private static int _counter;
         private Timer _mainTimer;
-        private readonly int _dueTime;
+        private readonly TimeSpan _interval;
         private readonly List<TradeRuleBase> _traderRules = new List<TradeRuleBase>();
         private readonly BitstampClient _bitstampClient;
         private readonly IRepository<MinMaxLog> _minMaxLogRepository;
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<CurrencyPair> _currencyPairRepository;
 
-        public BitstampTrader(int dueTime)
+        public BitstampTrader(TimeSpan interval)
         {
             // Ninject
             var kernel = new StandardKernel();
@@ -42,9 +44,9 @@ namespace BitstampTradeBot.Trader
             _orderRepository = kernel.Get<IRepository<Order>>();
             _currencyPairRepository = kernel.Get<IRepository<CurrencyPair>>();
 
-            _dueTime = dueTime;
+            _interval = interval;
 
-            _bitstampClient = new BitstampClient(ApiKeys.BitstampApiKey, ApiKeys.BitstampApiSecret, ApiKeys.BitstampCustomerId );
+            _bitstampClient = new BitstampClient(ApiKeys.BitstampApiKey, ApiKeys.BitstampApiSecret, ApiKeys.BitstampCustomerId);
             CacheHelper.SaveTocache("TradingPairsDb", _currencyPairRepository.ToList(), DateTime.MaxValue);
         }
 
@@ -55,7 +57,7 @@ namespace BitstampTradeBot.Trader
 
         public void Start()
         {
-            _mainTimer = new Timer(TimerCallback, null, _dueTime, Timeout.Infinite);
+            _mainTimer = new Timer(TimerCallback, null, 0, Timeout.Infinite);
         }
 
         public void Stop()
@@ -76,12 +78,12 @@ namespace BitstampTradeBot.Trader
                 ErrorOccured?.Invoke(this, e);
             }
 
-            _mainTimer.Change(_dueTime, Timeout.Infinite);
+            _mainTimer.Change(_interval.Seconds * 1000, Timeout.Infinite);
         }
 
         private async Task Trade()
         {
-            await _traderRules[_counter].ExecuteAsync(this);
+            await _traderRules[_counter].ExecuteAsync();
 
             _counter++;
 
@@ -105,13 +107,19 @@ namespace BitstampTradeBot.Trader
 
         internal async Task<ExchangeOrder> BuyLimitOrderAsync(string pairCode, decimal amount, decimal price)
         {
-            var executedOrder = await _bitstampClient.BuyLimitOrderAsync(pairCode.ToLower(), amount, price);
+            var executedOrder = await _bitstampClient.BuyLimitOrderAsync(pairCode, amount, price);
 
             if (executedOrder.Id == 0) throw new Exception("Buy order not executed (order id = 0)");
 
             BuyLimitOrderPlaced?.Invoke(this, new BitstampOrderEventArgs(executedOrder));
+            LastBuyTimestamp = DateTime.Now;
 
-            return executedOrder; 
+            return executedOrder;
+        }
+
+        internal async Task<List<ExchangeOrder>> OpenOrdersAsync(string pairCode)
+        {
+            return await _bitstampClient.GetOpenOrdersAsync(pairCode);
         }
 
         #endregion proxy methods
@@ -157,7 +165,7 @@ namespace BitstampTradeBot.Trader
                     // order not found in the exchange orders, so the buy order has been executed --> sell the bought currency
 
                     // update buyprice
-                    var transactions = await _bitstampClient.GetTransactions();
+                    var transactions = await _bitstampClient.GetTransactionsAsync();
                     var transaction = transactions.First(t => t.Id == order.BuyId);
                     if (order.BuyPrice != transaction.Price)
                     {
@@ -165,13 +173,12 @@ namespace BitstampTradeBot.Trader
                     }
                     order.BuyTimestamp = transaction.Timestamp;
 
-                    // todo
                     BuyLimitOrderExecuted?.Invoke(this, new BitstampOrderEventArgs(new ExchangeOrder
                     {
                         Amount = order.BuyAmount,
                         Price = order.BuyPrice,
                         Id = order.BuyId,
-                        PairCode =  order.CurrencyPair.PairCode,
+                        PairCode = order.CurrencyPair.PairCode,
                         Timestamp = transaction.Timestamp
                     }));
 
