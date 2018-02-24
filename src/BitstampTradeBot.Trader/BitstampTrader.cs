@@ -30,9 +30,10 @@ namespace BitstampTradeBot.Trader
         private Timer _mainTimer;
         private readonly TimeSpan _interval;
         private readonly List<TradeRuleBase> _traderRules = new List<TradeRuleBase>();
-        private readonly BitstampClient _bitstampClient;
+        private readonly IExchange _exchange;
         private readonly IRepository<MinMaxLog> _minMaxLogRepository;
         private readonly IRepository<Order> _orderRepository;
+        private readonly IRepository<CurrencyPair> _currencyPairRepository;
 
         public BitstampTrader(TimeSpan interval)
         {
@@ -41,12 +42,15 @@ namespace BitstampTradeBot.Trader
             kernel.Load(Assembly.GetExecutingAssembly());
             _minMaxLogRepository = kernel.Get<IRepository<MinMaxLog>>();
             _orderRepository = kernel.Get<IRepository<Order>>();
-            var currencyPairRepository = kernel.Get<IRepository<CurrencyPair>>();
+            _currencyPairRepository = kernel.Get<IRepository<CurrencyPair>>();
+            _exchange = kernel.Get<IExchange>();
+
+            if (_currencyPairRepository.GetType() == typeof(MockRepository<CurrencyPair>))
+            {
+                GenerateMockData();
+            }
 
             _interval = interval;
-
-            _bitstampClient = new BitstampClient(ApiKeys.BitstampApiKey, ApiKeys.BitstampApiSecret, ApiKeys.BitstampCustomerId);
-            CacheHelper.SaveTocache("TradingPairsDb", currencyPairRepository.ToList(), DateTime.MaxValue);
         }
 
         public void AddTradeRule(TradeRuleBase tradeRule)
@@ -96,7 +100,7 @@ namespace BitstampTradeBot.Trader
 
         internal async Task<Ticker> GetTickerAsync(string pairCode)
         {
-            var ticker = await _bitstampClient.GetTickerAsync(pairCode);
+            var ticker = await _exchange.GetTickerAsync(pairCode);
             TickerRetrieved?.Invoke(this, new BitstampTickerEventArgs(ticker, pairCode));
 
             UpdateMinMaxLog(pairCode, ticker);
@@ -106,7 +110,7 @@ namespace BitstampTradeBot.Trader
 
         internal async Task<ExchangeOrder> BuyLimitOrderAsync(TradeSession tradeSession, decimal amount, decimal price)
         {
-            var executedOrder = await _bitstampClient.BuyLimitOrderAsync(tradeSession.PairCode, amount, price);
+            var executedOrder = await _exchange.BuyLimitOrderAsync(tradeSession.PairCode, amount, price);
 
             if (executedOrder.Id == 0) throw new Exception("Buy order not executed (order id = 0)");
 
@@ -114,6 +118,25 @@ namespace BitstampTradeBot.Trader
             tradeSession.LastBuyTimestamp = DateTime.Now;
 
             return executedOrder;
+        }
+
+        internal long GetCurrencyPairId(string pairCode)
+        {
+            return _currencyPairRepository.First(p => p.PairCode == pairCode).Id;
+        }
+
+        internal void AddNewOrderToDb(ExchangeOrder order, Ticker ticker, TradeSettings tradeSettings, TradingPairInfo pairInfo)
+        {
+            _orderRepository.Add(new Order
+            {
+                BuyId = order.Id,
+                CurrencyPairId = GetCurrencyPairId(order.PairCode),
+                BuyAmount = order.Amount,
+                BuyPrice = order.Price,
+                SellAmount = tradeSettings.GetSellBaseAmount(ticker, pairInfo),
+                SellPrice = tradeSettings.GetSellBasePrice(ticker, pairInfo)
+            });
+            _orderRepository.Save();
         }
 
         #endregion proxy methods
@@ -125,16 +148,16 @@ namespace BitstampTradeBot.Trader
             // get the record of the current day
             var currentDay = DateTime.Now.Date;
 
-            // get the pair code id from cache
-            var pairCodeId = CacheHelper.GetFromCache<List<CurrencyPair>>("TradingPairsDb").First(c => c.PairCode == pairCode).Id;
+            // get the currencypair
+            var currencyPair = _currencyPairRepository.First(p => p.PairCode == pairCode);
 
             // get minMaxLog from database
-            var minMaxLog = _minMaxLogRepository.ToList().FirstOrDefault(l => l.Day == currentDay && l.CurrencyPairId == pairCodeId);
+            var minMaxLog = _minMaxLogRepository.ToList().FirstOrDefault(l => l.Day == currentDay && l.CurrencyPairId == currencyPair.Id);
 
             // if the day record do not exist then add, otherwise update the min and max values if necessary
             if (minMaxLog == null)
             {
-                _minMaxLogRepository.Add(new MinMaxLog { Day = currentDay, CurrencyPairId = pairCodeId, Minimum = ticker.Last, Maximum = ticker.Last });
+                _minMaxLogRepository.Add(new MinMaxLog { Day = currentDay, CurrencyPairId = currencyPair.Id, Minimum = ticker.Last, Maximum = ticker.Last });
             }
             else
             {
@@ -148,7 +171,7 @@ namespace BitstampTradeBot.Trader
 
         private async Task CheckCurrencyBoughtAsync()
         {
-            OpenOrders = await _bitstampClient.GetOpenOrdersAsync();
+            OpenOrders = await _exchange.GetOpenOrdersAsync();
 
             // loop through all open buy orders in db
             foreach (var order in _orderRepository.Where(o => o.BuyTimestamp == null).ToList())
@@ -159,7 +182,7 @@ namespace BitstampTradeBot.Trader
                     // order not found in the exchange orders, so the buy order has been executed --> sell the bought currency
 
                     // update buy price
-                    var transactions = await _bitstampClient.GetTransactionsAsync();
+                    var transactions = await _exchange.GetTransactionsAsync();
                     var transaction = transactions.First(t => t.Id == order.BuyId);
                     if (order.BuyPrice != transaction.Price)
                     {
@@ -180,7 +203,7 @@ namespace BitstampTradeBot.Trader
                     var pairInfo = CacheHelper.GetFromCache<List<TradingPairInfo>>("TradingPairInfo").First(i => i.PairCode == order.CurrencyPair.PairCode.ToLower());
 
                     // sell currency on Bitstamp exchange
-                    var orderResult = await _bitstampClient.SellLimitOrderAsync(order.CurrencyPair.PairCode, Math.Round(order.SellAmount, pairInfo.BaseDecimals), Math.Round(order.SellPrice, pairInfo.CounterDecimals));
+                    var orderResult = await _exchange.SellLimitOrderAsync(order.CurrencyPair.PairCode, Math.Round(order.SellAmount, pairInfo.BaseDecimals), Math.Round(order.SellPrice, pairInfo.CounterDecimals));
 
                     if (orderResult.Id == 0) throw new Exception("Sell order not executed (order id = 0)");
 
@@ -198,11 +221,31 @@ namespace BitstampTradeBot.Trader
         {
             if (!CacheHelper.IsIncache("TradingPairInfo"))
             {
-                var pairsInfo = await _bitstampClient.GetPairsInfoAsync();
+                var pairsInfo = await _exchange.GetPairsInfoAsync();
 
+                // tradingpair info isn't likely to change
                 // cache the pairsinfo for 4 hours to reduce the number of api calls, Bitstamp allows only 600 calls per 10 minutes
                 CacheHelper.SaveTocache("TradingPairInfo", pairsInfo, DateTime.Now.AddHours(4));
             }
+        }
+
+        private void GenerateMockData()
+        {
+            _currencyPairRepository.Add(new CurrencyPair{Id = 1, PairCode = "btcusd"});
+            _currencyPairRepository.Add(new CurrencyPair{Id = 2, PairCode = "btceur"});
+            _currencyPairRepository.Add(new CurrencyPair{Id = 3, PairCode = "eurusd"});
+            _currencyPairRepository.Add(new CurrencyPair{Id = 4, PairCode = "xrpusd"});
+            _currencyPairRepository.Add(new CurrencyPair{Id = 5, PairCode = "xrpeur"});
+            _currencyPairRepository.Add(new CurrencyPair{Id = 6, PairCode = "xrpbtc"});
+            _currencyPairRepository.Add(new CurrencyPair{Id = 7, PairCode = "ltcusd"});
+            _currencyPairRepository.Add(new CurrencyPair{Id = 8, PairCode = "ltceur"});
+            _currencyPairRepository.Add(new CurrencyPair{Id = 9, PairCode = "ltcbtc"});
+            _currencyPairRepository.Add(new CurrencyPair{Id = 10, PairCode = "ethusd"});
+            _currencyPairRepository.Add(new CurrencyPair{Id = 11, PairCode = "etheur"});
+            _currencyPairRepository.Add(new CurrencyPair{Id = 12, PairCode = "ethbtc"});
+            _currencyPairRepository.Add(new CurrencyPair{Id = 13, PairCode = "bchusd"});
+            _currencyPairRepository.Add(new CurrencyPair{Id = 14, PairCode = "bcheur"});
+            _currencyPairRepository.Add(new CurrencyPair{Id = 15, PairCode = "bchbtc"});
         }
 
         #endregion helpers

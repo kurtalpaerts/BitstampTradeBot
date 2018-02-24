@@ -6,7 +6,7 @@ namespace BitstampTradeBot.Trader.Data.Repositories
     public interface IRepository<T>
     {
         void Add(T newEntity);
-        void Remove(T newEntity);
+        void Remove(T entity);
         void Save();
         void Update(T entity);
         IEnumerable<T> Where(Func<T, bool> predicate);

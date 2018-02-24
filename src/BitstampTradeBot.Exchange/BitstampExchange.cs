@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 namespace BitstampTradeBot.Exchange
 {
-    public class BitstampClient
+    public class BitstampExchange : IExchange
     {
         private const string ApiBaseUrl = "https://www.bitstamp.net/api/v2/";
 
@@ -23,7 +23,7 @@ namespace BitstampTradeBot.Exchange
         private readonly string _customerId;
         private readonly ApiCallCounter _apiCallCounter = new ApiCallCounter();
 
-        public BitstampClient(string apiKey, string apiSecret, string customerId)
+        public BitstampExchange(string apiKey, string apiSecret, string customerId)
         {
             _apiKey = apiKey;
             _apiSecret = apiSecret;

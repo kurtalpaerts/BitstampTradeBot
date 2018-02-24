@@ -13,8 +13,11 @@ namespace BitstampTradeBot.Trader.Data.Migrations
                     {
                         Id = c.Long(nullable: false, identity: true),
                         PairCode = c.String(),
+                        CurrencyPair_Id = c.Long(),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.CurrencyPairs", t => t.CurrencyPair_Id)
+                .Index(t => t.CurrencyPair_Id);
             
             CreateTable(
                 "dbo.Orders",
@@ -56,8 +59,10 @@ namespace BitstampTradeBot.Trader.Data.Migrations
         {
             DropForeignKey("dbo.MinMaxLogs", "CurrencyPairId", "dbo.CurrencyPairs");
             DropForeignKey("dbo.Orders", "CurrencyPairId", "dbo.CurrencyPairs");
+            DropForeignKey("dbo.CurrencyPairs", "CurrencyPair_Id", "dbo.CurrencyPairs");
             DropIndex("dbo.MinMaxLogs", new[] { "CurrencyPairId" });
             DropIndex("dbo.Orders", new[] { "CurrencyPairId" });
+            DropIndex("dbo.CurrencyPairs", new[] { "CurrencyPair_Id" });
             DropTable("dbo.MinMaxLogs");
             DropTable("dbo.Orders");
             DropTable("dbo.CurrencyPairs");

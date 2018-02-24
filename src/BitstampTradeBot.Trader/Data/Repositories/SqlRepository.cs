@@ -20,9 +20,9 @@ namespace BitstampTradeBot.Trader.Data.Repositories
             _ctx.Set<T>().Add(newEntity);
         }
 
-        public void Remove(T newEntity)
+        public void Remove(T entity)
         {
-            _ctx.Set<T>().Remove(newEntity);
+            _ctx.Set<T>().Remove(entity);
         }
 
         public void Save()

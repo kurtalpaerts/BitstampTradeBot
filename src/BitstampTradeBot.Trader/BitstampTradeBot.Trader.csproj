@@ -64,17 +64,18 @@
     <Compile Include="Data\Models\MinMaxLog.cs" />
     <Compile Include="Data\Models\Order.cs" />
     <Compile Include="Data\Repositories\IRepository.cs" />
+    <Compile Include="Data\Repositories\MockRepository.cs" />
     <Compile Include="Data\Repositories\SqlRepository.cs" />
     <Compile Include="Data\Helpers\CacheHelper.cs" />
     <Compile Include="Data\Helpers\DbSetExtensions.cs" />
     <Compile Include="Data\Helpers\EnumExtensions.cs" />
-    <Compile Include="Data\Helpers\NinjectBindings.cs" />
+    <Compile Include="Migrations\201802241212265_Initial.cs" />
+    <Compile Include="Migrations\201802241212265_Initial.Designer.cs">
+      <DependentUpon>201802241212265_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NinjectBindings.cs" />
     <Compile Include="Models\TradeSettings.cs" />
     <Compile Include="Data\Migrations\Configuration.cs" />
-    <Compile Include="Migrations\201802180844084_Initial.cs" />
-    <Compile Include="Migrations\201802180844084_Initial.Designer.cs">
-      <DependentUpon>201802180844084_Initial.cs</DependentUpon>
-    </Compile>
     <Compile Include="Models\ApiKeys.cs" />
     <Compile Include="Models\Exchange\BitstampOrderEventArgs.cs" />
     <Compile Include="Models\Exchange\BitstampTickerEventArgs.cs" />
@@ -97,11 +98,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201802180844084_Initial.resx">
-      <DependentUpon>201802180844084_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\BitstampTradeBot.Exchange\BitstampTradeBot.Exchange.csproj">
       <Project>{567f6da5-5598-4f13-af03-fe2171acaafc}</Project>
       <Name>BitstampTradeBot.Exchange</Name>
@@ -110,6 +106,12 @@
       <Project>{229c55cc-7719-4e42-85ab-d43c081249d2}</Project>
       <Name>BitstampTradeBot.Models</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201802241212265_Initial.resx">
+      <DependentUpon>201802241212265_Initial.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -47,8 +47,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BitstampClient.cs" />
+    <Compile Include="BitstampExchange.cs" />
     <Compile Include="Helpers\ApiCallCounter.cs" />
+    <Compile Include="Helpers\IdGenerator.cs" />
+    <Compile Include="IExchange.cs" />
+    <Compile Include="MockExchange.cs" />
     <Compile Include="Models\Attributes\BitstampTransactionMemberAttribute.cs" />
     <Compile Include="Models\BitstampAccountBalance.cs" />
     <Compile Include="Models\BitstampOrder.cs" />
