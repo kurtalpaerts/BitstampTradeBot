@@ -180,8 +180,7 @@ namespace BitstampTradeBot.Trader
                     var pairInfo = CacheHelper.GetFromCache<List<TradingPairInfo>>("TradingPairInfo").First(i => i.PairCode == order.CurrencyPair.PairCode.ToLower());
 
                     // sell currency on Bitstamp exchange
-                    var pairCode = (BitstampPairCode)Enum.Parse(typeof(BitstampPairCode), order.CurrencyPair.PairCode);
-                    var orderResult = await _bitstampClient.SellLimitOrderAsync(pairCode.ToString(), Math.Round(order.SellAmount, pairInfo.BaseDecimals), Math.Round(order.SellPrice, pairInfo.CounterDecimals));
+                    var orderResult = await _bitstampClient.SellLimitOrderAsync(order.CurrencyPair.PairCode, Math.Round(order.SellAmount, pairInfo.BaseDecimals), Math.Round(order.SellPrice, pairInfo.CounterDecimals));
 
                     if (orderResult.Id == 0) throw new Exception("Sell order not executed (order id = 0)");
 

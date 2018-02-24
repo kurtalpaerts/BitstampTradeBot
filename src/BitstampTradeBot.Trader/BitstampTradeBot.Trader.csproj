@@ -84,6 +84,7 @@
     <Compile Include="TradeHolders\MaxNumberOfBuyOrdersHolder.cs" />
     <Compile Include="TradeHolders\WaitPeriodAfterBuyOrderHolder.cs" />
     <Compile Include="TradeHolders\WaitPeriodAfterStartHolder.cs" />
+    <Compile Include="TradeRules\BuyAfterDropTradeRule.cs" />
     <Compile Include="TradeRules\BuyPeriodicTradeRule.cs" />
     <Compile Include="TradeRules\TradeRuleBase.cs" />
   </ItemGroup>

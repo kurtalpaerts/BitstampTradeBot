@@ -17,7 +17,7 @@ namespace BitstampTradeBot.Console
             try
             {
                 // initialize trader
-                _trader = new BitstampTrader(TimeSpan.FromSeconds(5));
+                _trader = new BitstampTrader(TimeSpan.FromSeconds(15));
                 
                 var tradeSettings = new TradeSettings
                 {
@@ -27,10 +27,10 @@ namespace BitstampTradeBot.Console
                     BaseAmountSavingsRate = 3,
                     SellPriceRate = 15
                 };
-                var tradeRule = new BuyPeriodicTradeRule(_trader,tradeSettings,
-                        //new WaitPeriodAfterStartHolder(TimeSpan.FromSeconds(0)),
-                        new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(1)),
-                        new MaxNumberOfBuyOrdersHolder(1));
+
+                var tradeRule = new BuyAfterDropTradeRule(_trader, tradeSettings, 2, TimeSpan.FromMinutes(10),
+                    new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(1)),
+                    new MaxNumberOfBuyOrdersHolder(1));
 
                 _trader.AddTradeRule(tradeRule);
 
@@ -68,7 +68,7 @@ namespace BitstampTradeBot.Console
 
         private static void TickerRetrieved(object sender, BitstampTickerEventArgs e)
         {
-            System.Console.WriteLine($"{e.PairCode} : {e.Ticker.Last.ToString("N8", new NumberFormatInfo { CurrencyDecimalDigits = 8 }) }  ");
+            System.Console.WriteLine($"{DateTime.Now:dd/MM/yy HH:mm:ss} - {e.PairCode} : {e.Ticker.Last.ToString("N8", new NumberFormatInfo { CurrencyDecimalDigits = 8 }) }  ");
         }
 
         private static void ErrorOccured(object sender, Exception e)
