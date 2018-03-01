@@ -120,7 +120,7 @@ namespace BitstampTradeBot.Trader
             return executedOrder;
         }
 
-        internal long GetCurrencyPairId(string pairCode)
+        private long GetCurrencyPairId(string pairCode)
         {
             return _currencyPairRepository.First(p => p.PairCode == pairCode).Id;
         }
@@ -131,6 +131,7 @@ namespace BitstampTradeBot.Trader
             {
                 BuyId = order.Id,
                 CurrencyPairId = GetCurrencyPairId(order.PairCode),
+                CurrencyPair = _currencyPairRepository.First(p => p.PairCode == order.PairCode), //todo: check with concrete repository
                 BuyAmount = order.Amount,
                 BuyPrice = order.Price,
                 SellAmount = tradeSettings.GetSellBaseAmount(ticker, pairInfo),
@@ -183,7 +184,7 @@ namespace BitstampTradeBot.Trader
 
                     // update buy price
                     var transactions = await _exchange.GetTransactionsAsync();
-                    var transaction = transactions.First(t => t.Id == order.BuyId);
+                    var transaction = transactions.First(t => t.OrderId == order.BuyId);
                     if (order.BuyPrice != transaction.Price)
                     {
                         order.BuyPrice = transaction.Price;

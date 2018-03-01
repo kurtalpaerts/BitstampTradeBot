@@ -7,5 +7,6 @@ namespace BitstampTradeBot.Models
         public long Id { get; set; }
         public DateTime Timestamp { get; set; }
         public decimal Price { get; set; }
+        public decimal OrderId { get; set; }
     }
 }

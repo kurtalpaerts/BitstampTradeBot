@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using BitstampTradeBot.Models;
 using BitstampTradeBot.Trader.Data.Helpers;
-using BitstampTradeBot.Trader.Data.Models;
-using BitstampTradeBot.Trader.Data.Repositories;
 using BitstampTradeBot.Trader.Models;
 using BitstampTradeBot.Trader.TradeHolders;
 
@@ -55,6 +53,8 @@ namespace BitstampTradeBot.Trader.TradeRules
             // get the tickers average
             _tickers.RemoveAll(t => t.Timestamp < DateTime.Now.Add(-_dropPeriod));
             var tickerAverage = _tickers.Average(t => t.Last);
+
+            Console.WriteLine("DEBUG : avg- " + Math.Round(tickerAverage,2) + "   bottom- " + Math.Round(tickerAverage * (1 - _dropRate / 100),2));
 
             // did the price drop?
             var lastTicker = _tickers.OrderByDescending(t => t.Timestamp).First();

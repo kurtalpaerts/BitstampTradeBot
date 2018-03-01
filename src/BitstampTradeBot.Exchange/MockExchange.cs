@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using BitstampTradeBot.Exchange.Helpers;
 using BitstampTradeBot.Models;
@@ -9,12 +10,15 @@ namespace BitstampTradeBot.Exchange
 {
     public class MockExchange : IExchange
     {
-        private readonly List<KeyValuePair<string, Ticker>> _tickers = new List<KeyValuePair<string, Ticker>>();
+        private const decimal TickerChangeRate = 0.01M;
+
+        private List<KeyValuePair<string, Ticker>> _tickers = new List<KeyValuePair<string, Ticker>>();
         private readonly List<ExchangeOrder> _openOrders = new List<ExchangeOrder>();
         private readonly List<Transaction> _transactions = new List<Transaction>();
         private readonly AccountBalance _accountBalance = new AccountBalance();
 
         private readonly IdGenerator _openOrdersIds = new IdGenerator();
+        private readonly IdGenerator _transactionsIds = new IdGenerator();
 
         public MockExchange()
         {
@@ -23,6 +27,8 @@ namespace BitstampTradeBot.Exchange
 
         public Task<Ticker> GetTickerAsync(string pairCode)
         {
+            UpdateTicker(pairCode);
+            CheckOrders(pairCode);
             return Task.Run(() => _tickers.First(t => t.Key == pairCode).Value);
         }
 
@@ -75,7 +81,10 @@ namespace BitstampTradeBot.Exchange
 
         public Task<ExchangeOrder> SellLimitOrderAsync(string pairCode, decimal amount, decimal price)
         {
-            throw new NotImplementedException();
+            var newOrder = new ExchangeOrder { Id = _openOrdersIds.GetNextId(), Timestamp = DateTime.Now, PairCode = pairCode, Amount = amount, Price = price, Type = BitstampOrderType.Sell };
+            _openOrders.Add(newOrder);
+
+            return Task.Run(() => newOrder);
         }
 
         private void InitializeTickers()
@@ -95,6 +104,36 @@ namespace BitstampTradeBot.Exchange
             _tickers.Add(new KeyValuePair<string, Ticker>("bchusd", new Ticker { Last = 1220, Timestamp = DateTime.Now }));
             _tickers.Add(new KeyValuePair<string, Ticker>("bcheur", new Ticker { Last = 985, Timestamp = DateTime.Now }));
             _tickers.Add(new KeyValuePair<string, Ticker>("bchbtc", new Ticker { Last = 0.125M, Timestamp = DateTime.Now }));
+        }
+
+        private void UpdateTicker(string pairCode)
+        {
+            // get current ticker
+            var ticker = _tickers.First(t => t.Key == pairCode);
+
+            // make new ticker
+            var newTicker = new KeyValuePair<string, Ticker>(pairCode, new Ticker { Last = ticker.Value.Last - 100, Timestamp = DateTime.Now });
+
+            // update ticker
+            _tickers.Remove(ticker);
+            _tickers.Add(newTicker);
+        }
+
+        private void CheckOrders(string pairCode)
+        {
+            // get current ticker
+            var ticker = _tickers.First(t => t.Key == pairCode);
+
+            // loop through all buy orders
+            foreach (var exchangeOrder in _openOrders.Where(o => o.PairCode == pairCode).ToList())
+            {
+                if (exchangeOrder.Price <= ticker.Value.Last)
+                {
+                    // there is an order with a price higher than the ticker => simulate buy (just remove the order from the open orders and add it to the transactions)
+                    _transactions.Add(new Transaction { Id = _transactionsIds.GetNextId(), Price = exchangeOrder.Price, Timestamp = DateTime.Now, OrderId = exchangeOrder.Id });
+                    _openOrders.Remove(exchangeOrder);
+                }
+            }
         }
     }
 }
