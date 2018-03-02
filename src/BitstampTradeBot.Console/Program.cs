@@ -24,7 +24,7 @@ namespace BitstampTradeBot.Console
                     .CreateLogger();
 
                 // initialize trader
-                _trader = new BitstampTrader(TimeSpan.FromSeconds(15));
+                _trader = new BitstampTrader(TimeSpan.FromSeconds(10));
 
                 var tradeSettings = new TradeSettings
                 {
@@ -35,12 +35,12 @@ namespace BitstampTradeBot.Console
                     SellPriceRate = 15
                 };
 
-                var tradeRule = new BuyAfterDropTradeRule(_trader, tradeSettings, 3, TimeSpan.FromMinutes(15),
-                    new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(1)),
-                    new MaxNumberOfBuyOrdersHolder(1));
+                //var tradeRule = new BuyAfterDropTradeRule(_trader, tradeSettings, 2, TimeSpan.FromMinutes(15),
+                //    new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(1)),
+                //    new MaxNumberOfBuyOrdersHolder(1));
 
-                //var tradeRule = new BuyPeriodicTradeRule(_trader, tradeSettings,
-                //    new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromMinutes(30)));
+                var tradeRule = new BuyPeriodicTradeRule(_trader, tradeSettings,
+                    new WaitPeriodAfterStartHolder(TimeSpan.FromHours(1)));
 
                 _trader.AddTradeRule(tradeRule);
 

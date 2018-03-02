@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using BitstampTradeBot.Exchange.Helpers;
 using BitstampTradeBot.Models;
 
 namespace BitstampTradeBot.Exchange
 {
+    public enum SimulationMode
+    {
+        LogarithmicDrop,
+        LogarithmicRise,
+        Random,
+    }
+
     public class MockExchange : IExchange
     {
-        private const decimal TickerChangeRate = 0.01M;
-
-        private List<KeyValuePair<string, Ticker>> _tickers = new List<KeyValuePair<string, Ticker>>();
+        private readonly List<KeyValuePair<string, Ticker>> _tickers = new List<KeyValuePair<string, Ticker>>();
         private readonly List<ExchangeOrder> _openOrders = new List<ExchangeOrder>();
         private readonly List<Transaction> _transactions = new List<Transaction>();
         private readonly AccountBalance _accountBalance = new AccountBalance();
@@ -20,8 +24,13 @@ namespace BitstampTradeBot.Exchange
         private readonly IdGenerator _openOrdersIds = new IdGenerator();
         private readonly IdGenerator _transactionsIds = new IdGenerator();
 
-        public MockExchange()
+        private readonly SimulationMode _simulationMode;
+        private readonly decimal _tickerChangeRate;
+
+        public MockExchange(SimulationMode simulationMode, decimal tickerChangeRate)
         {
+            _simulationMode = simulationMode;
+            _tickerChangeRate = tickerChangeRate;
             InitializeTickers();
         }
 
@@ -111,8 +120,26 @@ namespace BitstampTradeBot.Exchange
             // get current ticker
             var ticker = _tickers.First(t => t.Key == pairCode);
 
+            // calculate the ticker change
+            decimal tickerChange;
+            switch (_simulationMode)
+            {
+                case SimulationMode.LogarithmicDrop:
+                    tickerChange = -ticker.Value.Last * (_tickerChangeRate / 100M);
+                    break;
+                case SimulationMode.LogarithmicRise:
+                    tickerChange = ticker.Value.Last * (_tickerChangeRate / 100M);
+                    break;
+                case SimulationMode.Random:
+                    var r = new Random();
+                    tickerChange = ticker.Value.Last * (_tickerChangeRate / 100M) * (r.Next(0, 2) * 2 - 1);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
             // make new ticker
-            var newTicker = new KeyValuePair<string, Ticker>(pairCode, new Ticker { Last = ticker.Value.Last - 100, Timestamp = DateTime.Now });
+            var newTicker = new KeyValuePair<string, Ticker>(pairCode, new Ticker { Last = ticker.Value.Last + tickerChange, Timestamp = DateTime.Now });
 
             // update ticker
             _tickers.Remove(ticker);
