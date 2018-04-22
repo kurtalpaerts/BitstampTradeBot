@@ -24,23 +24,24 @@ namespace BitstampTradeBot.Console
                     .CreateLogger();
 
                 // initialize trader
-                _trader = new BitstampTrader(TimeSpan.FromSeconds(10));
+                _trader = new BitstampTrader(TimeSpan.FromSeconds(15));
 
                 var tradeSettings = new TradeSettings
                 {
                     PairCode = "btceur",
-                    BuyUnderPriceMargin = 2,
+                    BuyUnderPriceMargin = 1,
                     CounterAmount = 10,
                     BaseAmountSavingsRate = 3,
-                    SellPriceRate = 15
+                    SellPriceRate = 10
                 };
 
-                //var tradeRule = new BuyAfterDropTradeRule(_trader, tradeSettings, 2, TimeSpan.FromMinutes(15),
+                //var tradeRule = new BuyAfterDropTradeRule(_trader, tradeSettings, 1.5M, TimeSpan.FromMinutes(15),
                 //    new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(1)),
                 //    new MaxNumberOfBuyOrdersHolder(1));
 
                 var tradeRule = new BuyPeriodicTradeRule(_trader, tradeSettings,
-                    new WaitPeriodAfterStartHolder(TimeSpan.FromHours(1)));
+                    new WaitPeriodAfterStartHolder(TimeSpan.FromMinutes(1)),
+                    new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(1)));
 
                 _trader.AddTradeRule(tradeRule);
 

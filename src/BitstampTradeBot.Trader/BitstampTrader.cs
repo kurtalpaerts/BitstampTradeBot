@@ -208,6 +208,7 @@ namespace BitstampTradeBot.Trader
 
                     if (orderResult.Id == 0) throw new Exception("Sell order not executed (order id = 0)");
 
+                    orderResult.PairCode = order.CurrencyPair.PairCode;
                     SellLimitOrderPlaced?.Invoke(this, new BitstampOrderEventArgs(orderResult));
 
                     // update order in database
