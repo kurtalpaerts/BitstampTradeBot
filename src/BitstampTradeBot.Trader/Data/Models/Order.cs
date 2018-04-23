@@ -9,7 +9,6 @@ namespace BitstampTradeBot.Trader.Data.Models
         public long Id { get; set; }
         
         [Required]
-        [ForeignKey("CurrencyPair")]
         public long CurrencyPairId { get; set; }
 
         [Required]

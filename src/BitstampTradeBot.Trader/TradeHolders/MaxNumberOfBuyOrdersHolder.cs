@@ -15,7 +15,7 @@ namespace BitstampTradeBot.Trader.TradeHolders
         
         public bool Execute(TradeSession tradeSession)
         {
-            var openOrders = tradeSession.OpenOrders.Where(o=> o.PairCode == tradeSession.PairCode);
+            var openOrders = tradeSession.OpenOrders.Where(o=> o.PairCode == tradeSession.PairCode).ToList();
 
             return openOrders.Count(o => o.Type == BitstampOrderType.Buy) >= _maxNumberOfBuyOrders;
         }

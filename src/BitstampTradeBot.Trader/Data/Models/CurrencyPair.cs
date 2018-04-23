@@ -10,7 +10,7 @@ namespace BitstampTradeBot.Trader.Data.Models
         public long Id { get; set; }
         public string PairCode { get; set; }
 
-        public ICollection<Order> Orders { get; set; }
-        public ICollection<CurrencyPair> MinMaxLogs { get; set; }
+        //public ICollection<Order> Orders { get; set; }
+        //public ICollection<CurrencyPair> MinMaxLogs { get; set; }
     }
 }

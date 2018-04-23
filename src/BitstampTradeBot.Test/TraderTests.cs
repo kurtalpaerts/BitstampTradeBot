@@ -95,5 +95,30 @@ namespace BitstampTradeBot.Test
             Assert.AreEqual(resultWithOneOrder, false);
             Assert.AreEqual(resultWithTwoOrders, true);
         }
+
+        [TestMethod]
+        public void MaxNumberOfSellOrdersHolder()
+        {
+            // arrange
+            var sessionWithZeroOrders = new TradeSession { OpenOrders = new List<ExchangeOrder>() };
+            var sessionWithOneOrder = new TradeSession { OpenOrders = new List<ExchangeOrder> { new ExchangeOrder { Type = BitstampOrderType.Sell } } };
+            var sessionWithTwoOrders = new TradeSession
+            {
+                OpenOrders = new List<ExchangeOrder> {
+                    new ExchangeOrder{ Type = BitstampOrderType.Sell},
+                    new ExchangeOrder{Type = BitstampOrderType.Sell}}
+            };
+            var tradeHolder = new MaxNumberOfSellOrdersHolder(2);
+
+            // act
+            var resultWithZeroOrders = tradeHolder.Execute(sessionWithZeroOrders);
+            var resultWithOneOrder = tradeHolder.Execute(sessionWithOneOrder);
+            var resultWithTwoOrders = tradeHolder.Execute(sessionWithTwoOrders);
+
+            // assert
+            Assert.AreEqual(resultWithZeroOrders, false);
+            Assert.AreEqual(resultWithOneOrder, false);
+            Assert.AreEqual(resultWithTwoOrders, true);
+        }
     }
 }

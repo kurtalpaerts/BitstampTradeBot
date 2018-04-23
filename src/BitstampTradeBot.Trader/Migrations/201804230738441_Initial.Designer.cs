@@ -13,7 +13,7 @@ namespace BitstampTradeBot.Trader.Data.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201802241212265_Initial"; }
+            get { return "201804230738441_Initial"; }
         }
         
         string IMigrationMetadata.Source

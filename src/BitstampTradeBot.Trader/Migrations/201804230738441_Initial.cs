@@ -13,11 +13,21 @@ namespace BitstampTradeBot.Trader.Data.Migrations
                     {
                         Id = c.Long(nullable: false, identity: true),
                         PairCode = c.String(),
-                        CurrencyPair_Id = c.Long(),
                     })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.CurrencyPairs", t => t.CurrencyPair_Id)
-                .Index(t => t.CurrencyPair_Id);
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "dbo.MinMaxLogs",
+                c => new
+                    {
+                        Day = c.DateTime(nullable: false),
+                        CurrencyPairId = c.Long(nullable: false),
+                        Minimum = c.Decimal(nullable: false, precision: 18, scale: 8),
+                        Maximum = c.Decimal(nullable: false, precision: 18, scale: 8),
+                    })
+                .PrimaryKey(t => new { t.Day, t.CurrencyPairId })
+                .ForeignKey("dbo.CurrencyPairs", t => t.CurrencyPairId)
+                .Index(t => t.CurrencyPairId);
             
             CreateTable(
                 "dbo.Orders",
@@ -40,31 +50,16 @@ namespace BitstampTradeBot.Trader.Data.Migrations
                 .ForeignKey("dbo.CurrencyPairs", t => t.CurrencyPairId)
                 .Index(t => t.CurrencyPairId);
             
-            CreateTable(
-                "dbo.MinMaxLogs",
-                c => new
-                    {
-                        Day = c.DateTime(nullable: false),
-                        CurrencyPairId = c.Long(nullable: false),
-                        Minimum = c.Decimal(nullable: false, precision: 18, scale: 8),
-                        Maximum = c.Decimal(nullable: false, precision: 18, scale: 8),
-                    })
-                .PrimaryKey(t => new { t.Day, t.CurrencyPairId })
-                .ForeignKey("dbo.CurrencyPairs", t => t.CurrencyPairId)
-                .Index(t => t.CurrencyPairId);
-            
         }
         
         public override void Down()
         {
-            DropForeignKey("dbo.MinMaxLogs", "CurrencyPairId", "dbo.CurrencyPairs");
             DropForeignKey("dbo.Orders", "CurrencyPairId", "dbo.CurrencyPairs");
-            DropForeignKey("dbo.CurrencyPairs", "CurrencyPair_Id", "dbo.CurrencyPairs");
-            DropIndex("dbo.MinMaxLogs", new[] { "CurrencyPairId" });
+            DropForeignKey("dbo.MinMaxLogs", "CurrencyPairId", "dbo.CurrencyPairs");
             DropIndex("dbo.Orders", new[] { "CurrencyPairId" });
-            DropIndex("dbo.CurrencyPairs", new[] { "CurrencyPair_Id" });
-            DropTable("dbo.MinMaxLogs");
+            DropIndex("dbo.MinMaxLogs", new[] { "CurrencyPairId" });
             DropTable("dbo.Orders");
+            DropTable("dbo.MinMaxLogs");
             DropTable("dbo.CurrencyPairs");
         }
     }

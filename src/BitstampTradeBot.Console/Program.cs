@@ -28,7 +28,7 @@ namespace BitstampTradeBot.Console
 
                 var tradeSettings = new TradeSettings
                 {
-                    PairCode = "btceur",
+                    PairCode = "xrpeur",
                     BuyUnderPriceMargin = 1,
                     CounterAmount = 10,
                     BaseAmountSavingsRate = 3,
@@ -41,7 +41,9 @@ namespace BitstampTradeBot.Console
 
                 var tradeRule = new BuyPeriodicTradeRule(_trader, tradeSettings,
                     new WaitPeriodAfterStartHolder(TimeSpan.FromMinutes(1)),
-                    new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(1)));
+                    new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(1)),
+                    new MaxNumberOfBuyOrdersHolder(1),
+                    new MaxNumberOfSellOrdersHolder(1));
 
                 _trader.AddTradeRule(tradeRule);
 

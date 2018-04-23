@@ -12,7 +12,6 @@ namespace BitstampTradeBot.Trader.Data.Models
 
         [Key]
         [Column(Order = 1)]
-        [ForeignKey("CurrencyPair")]
         public long CurrencyPairId { get; set; }
 
         public decimal Minimum { get; set; }
