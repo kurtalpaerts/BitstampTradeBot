@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Specialized;
+using BitstampTradeBot.Models;
 using BitstampTradeBot.Trader;
 using BitstampTradeBot.Trader.Models;
 using BitstampTradeBot.Trader.TradeRules;
@@ -26,26 +26,30 @@ namespace BitstampTradeBot.Console
                 // initialize trader
                 _trader = new BitstampTrader(TimeSpan.FromSeconds(15));
 
-                var tradeSettings = new TradeSettings
+                var paircodes = new[] {BitstampPairCode.btceur,  BitstampPairCode.xrpeur, BitstampPairCode.ltceur, BitstampPairCode.etheur, BitstampPairCode.bcheur };
+                foreach (var bitstampPairCode in paircodes)
                 {
-                    PairCode = "xrpeur",
-                    BuyUnderPriceMargin = 1,
-                    CounterAmount = 10,
-                    BaseAmountSavingsRate = 3,
-                    SellPriceRate = 10
-                };
+                    var tradeSettings = new TradeSettings
+                    {
+                        PairCode = bitstampPairCode.ToString(),
+                        BuyUnderPriceMargin = 1,
+                        CounterAmount = 10,
+                        BaseAmountSavingsRate = 3,
+                        SellPriceRate = 10
+                    };
+
+                    var tradeRule = new BuyPeriodicTradeRule(_trader, tradeSettings,
+                        new WaitPeriodAfterStartHolder(TimeSpan.FromMinutes(1)),
+                        new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(1)),
+                        new MaxNumberOfBuyOrdersHolder(1),
+                        new MaxNumberOfSellOrdersHolder(1));
+
+                    _trader.AddTradeRule(tradeRule);
+                }
 
                 //var tradeRule = new BuyAfterDropTradeRule(_trader, tradeSettings, 1.5M, TimeSpan.FromMinutes(15),
                 //    new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(1)),
                 //    new MaxNumberOfBuyOrdersHolder(1));
-
-                var tradeRule = new BuyPeriodicTradeRule(_trader, tradeSettings,
-                    new WaitPeriodAfterStartHolder(TimeSpan.FromMinutes(1)),
-                    new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(1)),
-                    new MaxNumberOfBuyOrdersHolder(1),
-                    new MaxNumberOfSellOrdersHolder(1));
-
-                _trader.AddTradeRule(tradeRule);
 
                 _trader.ErrorOccured += ErrorOccured;
                 _trader.TickerRetrieved += TickerRetrieved;

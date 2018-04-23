@@ -190,7 +190,7 @@ namespace BitstampTradeBot.Trader
                     order.BuyPrice = transaction.Price;
                 }
                 order.BuyTimestamp = transaction.Timestamp;
-
+                
                 BuyLimitOrderExecuted?.Invoke(this, new BitstampOrderEventArgs(new ExchangeOrder
                 {
                     Amount = order.BuyAmount,
