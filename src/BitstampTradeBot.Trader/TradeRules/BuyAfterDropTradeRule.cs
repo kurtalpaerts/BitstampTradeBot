@@ -44,14 +44,16 @@ namespace BitstampTradeBot.Trader.TradeRules
 
         private bool PriceDropped()
         {
+            var currentTime = DateTime.Now;
+
             // are there enough tickers?
-            if (_tickers.OrderBy(t => t.Timestamp).First().Timestamp > DateTime.Now.Add(-_dropPeriod))
+            if (_tickers.OrderBy(t => t.Timestamp).First().Timestamp > currentTime.Add(-_dropPeriod))
             {
                 return false;
             }
 
             // get the tickers average
-            _tickers.RemoveAll(t => t.Timestamp < DateTime.Now.Add(-_dropPeriod));
+            _tickers.RemoveAll(t => t.Timestamp < currentTime.Add(- (_dropPeriod - BitstampTrader.Interval)));
             var tickerAverage = _tickers.Average(t => t.Last);
 
             Console.WriteLine("DEBUG : avg- " + Math.Round(tickerAverage,2) + "   bottom- " + Math.Round(tickerAverage * (1 - _dropRate / 100),2));

@@ -32,17 +32,16 @@ namespace BitstampTradeBot.Console
                     var tradeSettings = new TradeSettings
                     {
                         PairCode = bitstampPairCode.ToString(),
-                        BuyUnderPriceMargin = 1,
+                        BuyUnderPriceMargin = 0.5M,
                         CounterAmount = 10,
-                        BaseAmountSavingsRate = 3,
-                        SellPriceRate = 10
+                        BaseAmountSavingsRate = 1.5M,
+                        SellPriceRate = 5
                     };
 
-                    var tradeRule = new BuyPeriodicTradeRule(_trader, tradeSettings,
-                        new WaitPeriodAfterStartHolder(TimeSpan.FromMinutes(1)),
-                        new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(1)),
+                    var tradeRule = new BuyAfterDropTradeRule(_trader, tradeSettings, 1.3M, TimeSpan.FromMinutes(30),
+                        new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(2)),
                         new MaxNumberOfBuyOrdersHolder(1),
-                        new MaxNumberOfSellOrdersHolder(1));
+                        new MaxNumberOfSellOrdersHolder(2));
 
                     _trader.AddTradeRule(tradeRule);
                 }
@@ -56,6 +55,7 @@ namespace BitstampTradeBot.Console
                 _trader.BuyLimitOrderPlaced += BuyLimitOrderPlaced;
                 _trader.BuyLimitOrderExecuted += BuyLimitOrderExecuted;
                 _trader.SellLimitOrderPlaced += SellLimitOrderPlaced;
+                _trader.SellLimitOrderExecuted += SellLimitOrderExecuted;
 
                 // start trader
                 _trader.Start();
@@ -79,6 +79,18 @@ namespace BitstampTradeBot.Console
                 e.Order.Price,
                 counterPairCode,
                 e.Order.Amount * e.Order.Price,
+                counterPairCode);
+        }
+
+        private static void SellLimitOrderExecuted(object sender, BitstampOrderEventArgs e)
+        {
+            var basePairCode = e.Order.PairCode.Substring(0, 3).ToUpper();
+            var counterPairCode = e.Order.PairCode.Substring(3, 3).ToUpper();
+
+            Log.Information("Sell order executed for {Amount}{BasePairCode} @{Price}{CounterPairCode}",
+                e.Order.Amount,
+                basePairCode,
+                e.Order.Price,
                 counterPairCode);
         }
 
