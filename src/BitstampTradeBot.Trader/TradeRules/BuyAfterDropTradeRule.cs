@@ -53,7 +53,7 @@ namespace BitstampTradeBot.Trader.TradeRules
             }
 
             // get the tickers average
-            _tickers.RemoveAll(t => t.Timestamp < currentTime.Add(- (_dropPeriod - BitstampTrader.Interval)));
+            _tickers.RemoveAll(t => t.Timestamp < currentTime.Add(- (_dropPeriod + BitstampTrader.Interval)));
             var tickerAverage = _tickers.Average(t => t.Last);
 
             Console.WriteLine("DEBUG : avg- " + Math.Round(tickerAverage,2) + "   bottom- " + Math.Round(tickerAverage * (1 - _dropRate / 100),2));

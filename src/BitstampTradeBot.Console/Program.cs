@@ -32,23 +32,23 @@ namespace BitstampTradeBot.Console
                     var tradeSettings = new TradeSettings
                     {
                         PairCode = bitstampPairCode.ToString(),
-                        BuyUnderPriceMargin = 0.5M,
-                        CounterAmount = 10,
+                        BuyUnderPriceMargin = 0.6M,
+                        CounterAmount = 15,
                         BaseAmountSavingsRate = 1.5M,
                         SellPriceRate = 5
                     };
 
-                    var tradeRule = new BuyAfterDropTradeRule(_trader, tradeSettings, 1.3M, TimeSpan.FromMinutes(30),
-                        new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(2)),
+                    var tradeRule = new BuyAfterDropTradeRule(_trader, tradeSettings, 1.5M, TimeSpan.FromMinutes(30),
+                        new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(3)),
                         new MaxNumberOfBuyOrdersHolder(1),
-                        new MaxNumberOfSellOrdersHolder(2));
+                        new MaxNumberOfSellOrdersHolder(4));
+
+                    //var tradeRule = new BuyPeriodicTradeRule(_trader, tradeSettings,
+                    //    new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(1)),
+                    //    new MaxNumberOfBuyOrdersHolder(1));
 
                     _trader.AddTradeRule(tradeRule);
                 }
-
-                //var tradeRule = new BuyAfterDropTradeRule(_trader, tradeSettings, 1.5M, TimeSpan.FromMinutes(15),
-                //    new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(1)),
-                //    new MaxNumberOfBuyOrdersHolder(1));
 
                 _trader.ErrorOccured += ErrorOccured;
                 _trader.TickerRetrieved += TickerRetrieved;

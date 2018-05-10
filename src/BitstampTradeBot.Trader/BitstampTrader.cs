@@ -134,7 +134,7 @@ namespace BitstampTradeBot.Trader
             {
                 BuyId = order.Id,
                 CurrencyPairId = GetCurrencyPairId(order.PairCode),
-                CurrencyPair = _currencyPairRepository.First(p => p.PairCode == order.PairCode), //todo: check with concrete repository
+                //CurrencyPair = _currencyPairRepository.First(p => p.PairCode == order.PairCode), //todo: check with concrete repository
                 BuyAmount = order.Amount,
                 BuyPrice = order.Price,
                 SellAmount = tradeSettings.GetSellBaseAmount(ticker, pairInfo),
@@ -194,24 +194,26 @@ namespace BitstampTradeBot.Trader
                 }
                 order.BuyTimestamp = transaction.Timestamp;
 
+                var paircode = _currencyPairRepository.First(p=> p.Id == order.CurrencyPairId).PairCode;
+
                 BuyLimitOrderExecuted?.Invoke(this, new BitstampOrderEventArgs(new ExchangeOrder
                 {
                     Amount = order.BuyAmount,
                     Price = order.BuyPrice,
                     Id = order.BuyId,
-                    PairCode = order.CurrencyPair.PairCode,
+                    PairCode = paircode,
                     Timestamp = transaction.Timestamp
                 }));
 
                 // get pair info from cache
-                var pairInfo = CacheHelper.GetFromCache<List<TradingPairInfo>>("TradingPairInfo").First(i => i.PairCode == order.CurrencyPair.PairCode.ToLower());
+                var pairInfo = CacheHelper.GetFromCache<List<TradingPairInfo>>("TradingPairInfo").First(i => i.PairCode == paircode);
 
                 // sell currency on Bitstamp exchange
-                var orderResult = await _exchange.SellLimitOrderAsync(order.CurrencyPair.PairCode, Math.Round(order.SellAmount, pairInfo.BaseDecimals), Math.Round(order.SellPrice, pairInfo.CounterDecimals));
+                var orderResult = await _exchange.SellLimitOrderAsync(paircode, Math.Round(order.SellAmount, pairInfo.BaseDecimals), Math.Round(order.SellPrice, pairInfo.CounterDecimals));
 
                 if (orderResult.Id == 0) throw new Exception("Sell order not executed (order id = 0)");
 
-                orderResult.PairCode = order.CurrencyPair.PairCode;
+                orderResult.PairCode = paircode;
                 SellLimitOrderPlaced?.Invoke(this, new BitstampOrderEventArgs(orderResult));
 
                 // update order in database
@@ -234,10 +236,12 @@ namespace BitstampTradeBot.Trader
                     // sell order not found, so it has executed
 
                     // todo find the according transaction
-                    
+
+                    var paircode = _currencyPairRepository.First(p => p.Id == order.CurrencyPairId).PairCode;
+
                     SellLimitOrderExecuted?.Invoke(this, new BitstampOrderEventArgs(new ExchangeOrder
                     {
-                        Amount = order.SellAmount, PairCode = order.CurrencyPair.PairCode, Price = order.SellPrice
+                        Amount = order.SellAmount, PairCode = paircode, Price = order.SellPrice
                     }));
 
                     // update database
