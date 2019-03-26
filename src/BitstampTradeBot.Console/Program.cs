@@ -26,22 +26,22 @@ namespace BitstampTradeBot.Console
                 // initialize trader
                 _trader = new BitstampTrader(TimeSpan.FromSeconds(15));
 
-                var paircodes = new[] {BitstampPairCode.btceur,  BitstampPairCode.xrpeur, BitstampPairCode.ltceur, BitstampPairCode.etheur, BitstampPairCode.bcheur };
+                var paircodes = new[] { BitstampPairCode.btceur, BitstampPairCode.xrpeur, BitstampPairCode.ltceur, BitstampPairCode.etheur, BitstampPairCode.bcheur };
                 foreach (var bitstampPairCode in paircodes)
                 {
                     var tradeSettings = new TradeSettings
                     {
                         PairCode = bitstampPairCode.ToString(),
-                        BuyUnderPriceMargin = 0.6M,
-                        CounterAmount = 15,
-                        BaseAmountSavingsRate = 1.5M,
-                        SellPriceRate = 5
+                        BuyUnderPriceMargin = 0.4M,
+                        CounterAmount = 17,
+                        BaseAmountSavingsRate = 3.0M,
+                        SellPriceRate = 6
                     };
 
-                    var tradeRule = new BuyAfterDropTradeRule(_trader, tradeSettings, 1.5M, TimeSpan.FromMinutes(30),
-                        new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(3)),
+                    var tradeRule = new BuyAfterDropTradeRule(_trader, tradeSettings, 2.5M, TimeSpan.FromMinutes(60),
+                        new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(6)),
                         new MaxNumberOfBuyOrdersHolder(1),
-                        new MaxNumberOfSellOrdersHolder(4));
+                        new MaxNumberOfSellOrdersHolder(12));
 
                     //var tradeRule = new BuyPeriodicTradeRule(_trader, tradeSettings,
                     //    new WaitPeriodAfterBuyOrderHolder(TimeSpan.FromHours(1)),
@@ -49,6 +49,8 @@ namespace BitstampTradeBot.Console
 
                     _trader.AddTradeRule(tradeRule);
                 }
+
+                _trader.AddTradeRule(new LinearSpreadTradeRule(_trader, new TradeSettings{ PairCode = BitstampPairCode.btcusd.ToString(), BuyUnderPriceMargin = 0.2M, CounterAmount = 10, BaseAmountSavingsRate = 0.75M, SellPriceRate = 2}, 1.0M));
 
                 _trader.ErrorOccured += ErrorOccured;
                 _trader.TickerRetrieved += TickerRetrieved;

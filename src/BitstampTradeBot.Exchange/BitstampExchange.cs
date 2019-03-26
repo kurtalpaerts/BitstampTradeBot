@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -28,6 +29,8 @@ namespace BitstampTradeBot.Exchange
             _apiKey = apiKey;
             _apiSecret = apiSecret;
             _customerId = customerId;
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
             InitializeMappings();
         }

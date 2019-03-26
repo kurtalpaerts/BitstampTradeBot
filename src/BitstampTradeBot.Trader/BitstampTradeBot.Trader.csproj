@@ -88,6 +88,7 @@
     <Compile Include="TradeHolders\WaitPeriodAfterStartHolder.cs" />
     <Compile Include="TradeRules\BuyAfterDropTradeRule.cs" />
     <Compile Include="TradeRules\BuyPeriodicTradeRule.cs" />
+    <Compile Include="TradeRules\LinearSpreadTradeRule.cs" />
     <Compile Include="TradeRules\TradeRuleBase.cs" />
   </ItemGroup>
   <ItemGroup>

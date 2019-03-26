@@ -123,7 +123,7 @@ namespace BitstampTradeBot.Trader
             return executedOrder;
         }
 
-        private long GetCurrencyPairId(string pairCode)
+        internal long GetCurrencyPairId(string pairCode)
         {
             return _currencyPairRepository.First(p => p.PairCode == pairCode).Id;
         }
@@ -141,6 +141,11 @@ namespace BitstampTradeBot.Trader
                 SellPrice = tradeSettings.GetSellBasePrice(ticker, pairInfo)
             });
             _orderRepository.Save();
+        }
+
+        internal List<Order> GetOpenOrdersDb()
+        {
+            return _orderRepository.Where(o => o.SellTimestamp == null).ToList();
         }
 
         #endregion proxy methods
